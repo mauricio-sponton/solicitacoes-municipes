@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Projetos de Lei</title>
+<style type="text/css">
+</style>
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<main role="main">
+			<ul class="breadcrumb">
+				<li><a th:href="@{/home}">Dashboard </a></li>
+				<li class="active">Projetos de Lei</li>
+
+			</ul>
+			<div class="container">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div style="display: none;"
+							class="alerta-msg alert alert-danger alert-dismissible fade show"
+							role="alert" id="falha">
+							<i class="oi oi-check"></i> <span> <strong
+								style="color: black"></strong>
+							</span>
+							<button type="button" class="fechar close" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div th:replace="fragments/alert :: alerta-sucesso"></div>
+						<h1>Projetos de Lei</h1>
+						<a class="btn btn-filtro" data-toggle="collapse"
+							href="#filtrosaccordion" role="button" aria-expanded="false"
+							aria-controls="collapseExample"><i class="fas fa-filter mr-2" ></i>Filtros</a>
+					</div>
+				</div>
+				<div class="filtroDasSolicitacoes">
+					<div class="collapse" id="filtrosaccordion">
+						<div class="card card-body-filtros">
+							<form id="buscasAvancadas">
+								<div class="form-row">
+									<div class="form-group col-md-3">
+										<label for="buscaAssunto">Assunto:</label> <input type="text"
+											class="form-control" id="buscaAssunto" th:name="buscaAssunto">
+									</div>
+									<div class="form-group col-md-4">
+										<label for="status">Situação</label> <select th:name="status"
+											id="status" class="form-control">
+											<option value="" th:text="Selecione..."></option>
+											<option value="CRIADA" >Criação</option>
+											<option value="PROPOSITURA" >Propositura</option>
+											<option value="APROVADO_PREFEITO">Aprovado pela Prefeitura</option>
+											<option value="VETADO_PREFEITO">Vetado pela Prefeitura</option>
+											<option value="NOVA_VOTACAO">Nova votação</option>
+											<option value="VETADO_VEREADORES">Vetado pela Câmara</option>
+											<option value="APROVADO_VEREADORES">Aprovado pela Câmara</option>											
+										</select>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-3">
+										<label for="buscaData">Data Inicial:</label> <input
+											type="date" class="form-control" id="buscaData"
+											th:name="buscaData">
+									</div>
+									<div class="form-group col-md-3">
+										<label for="buscaDataFinal">Data Final:</label> <input type="date"
+											class="form-control" id="buscaDataFinal" th:name="buscaDataFinal">
+									</div>
+								</div>
+
+								<div class="btn-filtro-tamanho"
+									style="float: left; width: 95%; transform: translateX(-1.6%)">
+									<a class="btn btn-filtro" href="#" role="button"
+										id="limpar">Limpar Filtros</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container">
+
+				<div class="row">
+					<div class="col-md-12">
+
+						<table id="table-leis" class="table table-sm table-striped nowrap"
+							style="width: 100%">
+							<thead class="thead-dark">
+								<tr>
+									<th></th>
+									<th scope="col">Assunto</th>
+									<th scope="col">Situação</th>
+									<th scope="col">Data</th>
+									<th scope="col">Ações</th>
+								</tr>
+							</thead>
+						</table>
+
+					</div>
+				</div>
+				<a class="btn btn-adicionar" href="#" role="button"
+					data-toggle="modal" data-target="#modal-lei">Adicionar</a> <span
+					th:replace="lei/modal :: modal-form"></span>
+			</div>
+
+		</main>
+	</section>
+	<script th:src="@{/js/lei.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+		var lei= [[${lei.id}]];
+		var autoridade =[[${autoridade}]];
+		
+		$(document).ready(function() {
+					
+			if(lei != null){
+				$("#modal-lei").modal('show');
+				$(".modal-title").text("Editar Projeto de Lei");
+			}
+			if(lei == null){
+				$(".modal-title").text("Novo Projeto de Lei");
+			}
+			if ($("#msg-erro").html() != "") {
+				$("#modal-lei").modal('show');
+				$("#msg-erro, .invalid-feedback span").css("color", "red");
+			}
+
+			$("#modal-lei").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#msg-erro").hide();
+				$("#modal-lei").modal('hide');
+				
+			});
+			
+			$(".btn-adicionar").on("click", function(){
+				$(".form-control").val("");
+				$(".modal-title").text("Novo Projeto de Lei");
+			});
+			$('#confirm-modal').on('show.bs.modal', function(){
+				$(".modal-title").text("Excluir Projeto de Lei");
+				//$('#subtitulo').text('Todos pacientes que este cliente é dono serão deletados!');
+			})
+		})
+	</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<h1 style="margin-left: 2.6%; margin-top:1.5%">Editar Senha</h1>
+		<div th:replace="fragments/alert :: alerta-sucesso"></div>
+		<div class="container">
+
+
+
+			<div class="col-md-8 ">
+				<form th:action="@{/u/confirmar/senha}" method="POST">
+
+					<div class="mb-3">
+						<label for="senha">Nova senha</label> <input type="password"
+							class="form-control pass senha"  name="senha1" 
+							placeholder="Insira a nova senha" value="" required />
+						<div class="invalid-feedback">Digite sua nova senha.</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="senha-repetida">Repita nova senha</label> <input
+							type="password" class="form-control pass senha-repetida" 
+							name="senha2" 
+							placeholder="Repita a senha" value="" required />
+						<div class="invalid-feedback">Repita sua nova senha.</div>
+					</div>
+
+					<pre class="mb-0 senhas"></pre> <span class="errors"></span>
+
+					<div class="mb-3">
+						<label for="senha3">Senha atual</label> <input type="password"
+							class="form-control" id="senha3" name="senha3" 
+							placeholder="Insira sua senha de acesso" value="" readonly
+							required />
+						<div class="invalid-feedback">Digite sua senha atual para
+							confirmar.</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-sm-10">
+							<button type="submit" class="btn btn-primary salvar-user"
+								style="margin-left: 0%" data-toggle="tooltip"
+								data-placement="right" title="Salvar">Salvar</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+	</section>
+
+	<script th:src="@{/js/usuario.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript"></script>
+</body>
+</html>

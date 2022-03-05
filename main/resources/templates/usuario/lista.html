@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Usuários</title>
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<main role="main">
+			<ul class="breadcrumb">
+				<li><a th:href="@{/home}">Dashboard </a></li>
+				<li class="active">Usuários</li>
+
+			</ul>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+
+
+
+						<div th:replace="fragments/alert :: alerta-sucesso"></div>
+						<h1>Usuários</h1>
+
+						<table id="table-usuarios"
+							class="table table-sm table-striped nowrap" style="width: 100%">
+							<thead class="thead-dark">
+								<tr>
+									<th></th>
+									<th scope="col">Nome</th>
+									<th scope="col">Nome de Usuário (email)</th>
+									<th scope="col">Cadastro Ativo</th>
+									<th scope="col">Perfis</th>
+									<th scope="col">Ações</th>							
+								</tr>
+							</thead>
+						</table>
+
+					</div>
+				</div>
+				<a class="btn btn-adicionar" href="#" role="button"
+				data-toggle="modal" data-target="#modal-usuario">Adicionar</a> <span
+				th:replace="usuario/modal :: modal-form"></span>
+				 <span
+				th:replace="usuario/modal-edicao :: modal-form"></span>
+				 <span
+				th:replace="usuario/modal-senhas :: modal-form"></span>
+			</div>
+			
+
+		</main>
+	</section>
+	<script th:src="@{/js/usuario.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+	var usuario = [[${usuario.id}]];
+	var control = [[${control}]];
+	$(document).ready(function() {
+		
+		if(usuario != null){
+			if(control == "credenciais"){
+				$("#modal-usuario-edicao").modal('show');
+				$(".modal-title").text("Editar Usuário");
+			}
+			if(control == "senhas"){
+				$("#modal-senhas").modal('show');
+				$(".modal-title").text("Gerar Senhas");
+			}
+			
+		}
+		
+		if(usuario == null){
+			$(".modal-title").text("Novo Usuário");
+		}
+		if ($("#msg-erro").html() != "") {
+			$("#modal-usuario").modal('show');
+			$("#msg-erro, .invalid-feedback span").css("color", "red");
+		}
+
+		$("#modal-usuario").on("hidden.bs.modal", function() {
+			$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+			$("#msg-erro").hide();
+			$('.senhas').hide();
+			$("#modal-usuario").modal('hide');
+			
+		});
+		
+		$(".btn-adicionar").on("click", function(e){
+			e.preventDefault();
+			$(".form-control").val("");
+			$('.senhas').hide();
+			$(".modal-title").text("Novo Usuário");
+		});
+	})
+	
+	$('.perfis').ready(function(){
+		var perfis = [[${usuario.perfis}]];
+		$.each(perfis, function(k, v){
+			$('.perfis option[value="'+ v.id + '"]').attr('selected', 'selected');
+		})
+	});
+	
+			$('#confirm-modal').on('show.bs.modal', function(){
+				$(".modal-title").text("Excluir Usuário");
+				$('#subtitulo').text('Todas as informaçãoes referentes a este usuário serão deletadas do sistema!');
+			})
+	
+	</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Remetentes</title>
+<style type="text/css">
+
+</style>
+
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<div id="loader-form" class="pre-load"></div>
+		<main role="main">
+			<ul class="breadcrumb">
+				<li><a th:href="@{/home}">Dashboard </a></li>
+				<li class="active">Remetentes</li>
+
+			</ul>
+			<div class="container">
+
+				<div class="row">
+					<div class="col-md-12">
+
+						<div th:replace="fragments/alert :: alerta-sucesso"></div>
+						<h1>Remetentes</h1>
+
+						<table id="table-remetentes"
+							class="table table-sm table-striped nowrap" style="width: 100%">
+							<thead class="thead-dark">
+								<tr>
+									<th></th>
+									<th scope="col">Nome</th>
+									<th scope="col">Endereço</th>								
+									<th scope="col">Ações</th>
+								</tr>
+							</thead>
+						</table>
+
+					</div>
+				</div>
+				<a class="btn btn-adicionar" href="#" role="button"
+				data-toggle="modal" data-target="#modal-remetente">Adicionar</a> <span
+				th:replace="remetente/modal :: modal-form"></span>
+			</div>
+			
+				
+		</main>
+	</section>
+	<script th:src="@{/js/remetente.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+		var remetente = [[${remetente.id}]];
+		var autoridade = [[${autoridade}]];
+		$(document).ready(function() {
+			if(remetente != null){
+				$("#modal-remetente").modal('show');
+				$("#titulo-remetente").text("Editar Remetente");
+			}
+			if(remetente == null){
+				$("#titulo-remetente").text("Novo Remetente");
+			}
+			if ($("#msg-erro").html() != "") {
+				$("#modal-remetente").modal('show');			
+				$("#msg-erro, .invalid-feedback span").css("color", "red");
+			}
+
+			$("#modal-remetente").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#msg-erro").hide();
+				$("#modal-remetente").modal('hide');
+			
+			});
+			
+			$(".btn-cadastrar-usuario").on("click", function(){
+				$(".form-control").val("");
+				$(".modal-title").text("Novo Remetente");
+			});
+			$('#confirm-modal').on('show.bs.modal', function(){
+				$(".modal-title").text("Excluir Remetente");
+				
+			})
+		})
+	</script>
+</body>
+</html>

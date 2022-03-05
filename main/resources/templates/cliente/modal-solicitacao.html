@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+	<!-- Modal -->
+	<div th:fragment="modal-form" class="modal fade" id="modal-solicitacao"
+		tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-titulo">Cadastro de
+						Solicitação</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="visualizacao">
+						<div th:if="${sucessoModal != null}">
+							<div class="alert alert-success alert-dismissible fade show"
+								role="alert">
+								<i class="oi oi-check"></i> <span> <strong
+									th:text="${sucessoModal}" style="color: black"></strong>
+								</span>
+								<button type="button" class="close" data-dismiss="alert"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+						</div>
+						Deseja cadastrar uma solicitação para esse munícipe?
+						<div class="modal-footer">
+							<button id="salvar-municipe" class="btn btn-sim"
+								style="float: left">Sim</button>
+
+							<button id="fechar-modal" class="btn btn-perigo"
+								style="float: left">Não</button>
+						</div>
+
+					</div>
+					<div class="salvar-municipe">
+						<span th:text="${erro_solicitacao}" id="msg-erro-solicitacao"></span>
+						<form th:if="${emMemoria != null}"
+							th:action="@{/solicitacoes/salvar/{idMunicipe} (idMunicipe = ${emMemoria.id})}"
+							method="POST" enctype="multipart/form-data"
+							th:object="${solicitacao}" id="formA">
+							<div class="form-row">
+								<div class="form-group col-md-6">
+									<label for="cliente">Munícipe</label> <input type="text"
+										class="form-control" id="cliente"
+										th:placeholder="${emMemoria.nome}" readonly />
+
+								</div>
+								<div class="form-group col-md-6">
+									<label for="assunto">Bairro</label> <input type="text"
+										placeholder="Belas Artes..."
+										id="bairro-solicitacao-por-municipe"
+										class="form-control descricao-bairro"
+										th:field="*{bairro.descricao}"
+										th:classappend="${#fields.hasErrors('bairro.descricao')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										Selecione o bairro
+
+									</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-md-12">
+									<label for="assunto">Assunto</label> <input type="text"
+										placeholder="Assunto da solicitação"
+										class="form-control descricao-assunto"
+										 id="assunto-solicitacao-por-municipe"
+										th:field="*{assunto.descricao}"
+										th:classappend="${#fields.hasErrors('assunto.descricao')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										Selecione o assunto
+
+									</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-md-12">
+									<label for="descricao">Anotações</label>
+									<textarea class="form-control" id="descricao"
+										autofocus="autofocus" th:field="*{descricao}"
+										th:classappend="${#fields.hasErrors('descricao')} ? 'is-invalid'"></textarea>
+									<div class="invalid-feedback">
+										<span th:errors="*{descricao}"></span>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="idSolicitacao" class="form-control"
+								th:field="*{id}" />
+							<button type="button" class="btn btn-perigo"
+								data-dismiss="modal" id="cancelar-modal">Cancelar</button>
+							<button type="submit" class="btn btn-sim btn-validacao">Salvar</button>
+
+						</form>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

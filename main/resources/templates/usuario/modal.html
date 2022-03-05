@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+	<!-- Modal -->
+	<div th:fragment="modal-form" class="modal fade" id="modal-usuario"
+		tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLongTitle">Editar
+						Cliente</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<span th:text="${erro}" id="msg-erro"></span>
+					<form th:action="@{/u/cadastro/salvar}" method="POST"
+						th:object="${usuario}">
+						<div class="form-row">
+							<div class="form-group col-md-12">
+								<label for="nome">Nome</label> <input type="text"
+									class="form-control" id="nome" placeholder="Nome Completo"
+									autofocus="autofocus" th:field="*{nome}"
+									th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" />
+								<div class="invalid-feedback">
+									<span th:errors="*{nome}"></span>
+								</div>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="email">Email</label>
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span style="background: #04D284" class="input-group-text"
+										id="validationTooltipUsernamePrepend">@</span>
+								</div>
+								<input type="email" class="form-control" id="email"
+									th:field="*{email}" placeholder="Email"
+									th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+									aria-describedby="validationTooltipUsernamePrepend" />
+								<div class="invalid-feedback">
+									<span th:errors="*{email}"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<label for="senha">Nova Senha</label> <input type="password"
+								class="form-control pass senha" name="senha"
+								th:field="*{senha}" placeholder="Insira a nova senha do usuário"
+								th:classappend="${#fields.hasErrors('senha')} ? 'is-invalid'" />
+							<div class="invalid-feedback">
+								<span th:errors="*{senha}"></span>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="senha">Repita a Senha</label> <input type="password"
+								class="form-control pass senha-repetida" 
+								name="senha-repetida" placeholder="Repita a senha" />
+						</div>
+						<pre class="mb-0 senhas"></pre>
+						<span class="errors"></span>
+						
+						<div class="mb-3">
+							<label for="perfis">Perfil</label>
+<!-- 							<p>(Pressione CTRL para selecionar mais de um perfil).</p> -->
+							<select  class="custom-select perfis" size="4"
+								th:field="*{perfis}"
+								th:classappend="${#fields.hasErrors('perfis')} ? 'is-invalid'"
+								multiple>
+								<option value="1">Administrador</option>
+								<option value="2">Usuário</option>
+
+							</select> <input type="hidden" value="0" name="perfis">
+
+							<div class="invalid-feedback">Pelo menos um perfil é
+								requerido.</div>
+						</div>
+
+						<div class="mb-3">
+							<div class="custom-control custom-switch">
+								<input type="checkbox" class="custom-control-input"
+									th:field="*{ativo}" id="ativo"
+									th:if="${ativo == true ? 'checked=checked' : ''}" /> <label
+									class="custom-control-label" for="ativo">Cadastro Ativo</label>
+							</div>
+						</div>
+
+						
+						<input type="hidden" th:field="*{id}">
+						<div class="form-group row">
+							<div class="col-sm-10">
+								<button type="button" class="btn btn-perigo"
+									data-dismiss="modal" aria-label="Close" data-toggle="tooltip"
+									data-placement="right" title="Cancelar">Cancelar</button>
+								<button type="submit" class="btn btn-sim salvar-user"
+									data-toggle="tooltip" data-placement="right" title="Salvar"
+									disabled>Salvar</button>
+							</div>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

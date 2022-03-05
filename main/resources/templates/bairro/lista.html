@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Bairros</title>
+<style type="text/css">
+.visualizacao{
+ 	display: block
+ } 
+ .salvar-municipe{
+ 	display: none
+ }
+</style>
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<main role="main">
+			<ul class="breadcrumb">
+				<li><a th:href="@{/home}">Dashboard </a></li>
+				<li class="active">Bairros</li>
+
+			</ul>
+			<div class="container">
+
+				<div class="row">
+					<div class="col-md-12">
+
+						<div th:replace="fragments/alert :: alerta-sucesso"></div>
+						<h1>Bairros</h1>
+
+						<table id="table-bairros"
+							class="table table-sm table-striped nowrap"
+							style="width: 100%">
+							<thead class="thead-dark">
+								<tr>
+									<th></th>
+									<th scope="col">Descrição</th>
+									<th scope="col">Ativo</th>
+									<th scope="col">Ações</th>									
+								</tr>
+							</thead>
+						</table>
+
+					</div>
+				</div>
+				<a class="btn btn-adicionar" href="#" role="button"
+				data-toggle="modal" data-target="#modal-bairro">Adicionar</a> <span
+				th:replace="bairro/modal :: modal-form"></span>
+			</div>
+			
+		</main>
+	</section>
+	<script th:src="@{/js/bairro.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+		var bairro = [[${bairro.id}]];
+		var autoridade = [[${autoridade}]];
+		$(document).ready(function() {				
+			if(bairro != null){
+				$("#modal-bairro").modal('show');
+				$(".modal-title").text("Editar Bairro");
+			}
+			if(bairro == null){
+				$(".modal-title").text("Novo Bairro");
+			}
+			if ($("#msg-erro").html() != "") {
+				$("#modal-bairro").modal('show');
+				$("#msg-erro, .invalid-feedback span").css("color", "red");
+			}
+
+			$("#modal-bairro").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#msg-erro").hide();
+				$("#modal-bairro").modal('hide');
+				
+			});
+			
+			$(".btn-cadastrar-usuario").on("click", function(){
+				$(".form-control").val("");
+				$(".modal-title").text("Novo Bairro");
+			});
+			$('#confirm-modal').on('show.bs.modal', function(){
+				$(".modal-title").text("Excluir Bairro");
+				//$('#subtitulo').text('Todos pacientes que este cliente é dono serão deletados!');
+			})
+		})
+	</script>
+</body>
+</html>

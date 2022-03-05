@@ -1,0 +1,38 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<body>
+	<!-- Modal -->
+	<div th:fragment="modal-form"
+			class="modal fade" id="modal-finalizar" tabindex="-1" role="dialog" 
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-centered" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel"><span><i class="fas fa-exclamation-triangle"></i></span></h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	      	<img th:src="@{/image/warning.png}" class="warning-modal">
+	        Você tem certeza que deseja finalizar essa solicitação?
+	        <strong style="display:block; color:red">Solicitações finalizadas só poderão ser alteradas por um ADMIN!</strong>
+	      </div>
+	      <div class="modal-footer">
+	        
+	        <form th:action="@{/solicitacoes/finalizar/{id} (id=${solicitacao.id})}"
+						method="POST" enctype="multipart/form-data"
+						>
+	        
+	        <button id="btnCancel" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+	        <button type="submit" class="btn btn-success">Confirmar</button>
+	        </form>
+	        
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</body>
+</html>

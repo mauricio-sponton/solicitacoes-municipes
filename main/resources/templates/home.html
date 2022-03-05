@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<main role="main">
+			<div class="container mb-4">
+				<div th:replace="fragments/alert :: alerta-sucesso"></div>
+				<h1 class="dashboard-h mb-0 mt-3">Dashboard</h1>
+				<ul class="cards-dashboard">
+
+					<li><img th:src="@{/image/handshake.svg}" />
+						<p th:if="${not #lists.isEmpty(clientes)}">
+							Total de <strong> Munícipes</strong> cadastrados:<br
+								class="numero"> <strong th:text="${#lists.size(clientes)}">
+							</strong>
+
+						</p>
+						<p th:if="${#lists.isEmpty(clientes)}">
+							<span>Não há munícipes cadastrados no sistema! </span>
+
+						</p></li>
+
+					<li><img th:src="@{/image/list.svg}" />
+						<p th:if="${not #lists.isEmpty(solicitacoes)}">
+							Total de <strong> Solicitações</strong> cadastradas:<br
+								class="numero"> <strong
+								th:text="${#lists.size(solicitacoes)}"> </strong>
+
+						</p>
+						<p th:if="${#lists.isEmpty(solicitacoes)}">
+							<span>Não há solicitacões cadastradas no sistema! </span>
+
+						</p></li>
+
+					<li><img th:src="@{/image/users.svg}" />
+						<p th:if="${not #lists.isEmpty(usuarios)}">
+							Total de <strong> Usuários</strong> cadastrados:<br
+								class="numero"> <strong th:text="${#lists.size(usuarios)}">
+							</strong>
+
+						</p>
+						<p th:if="${#lists.isEmpty(usuarios)}">
+							<span>Não há usuários cadastrados no sistema! </span>
+
+						</p></li>
+				</ul>
+				<div class="card card-solicitacoes mb-4"
+					th:if="${not #lists.isEmpty(solicitacoesAtrasdas) || not #lists.isEmpty(solicitacoesPendentes)}">
+					<h5 class="card-header" style="width: 100%">Solicitações que requerem atenção</h5>
+					<div class="card-body">
+						<h5 style="width: 100%"							
+							class="card-title" th:if="${#lists.size(solicitacoesAtrasadas) > 1}"><span th:text="${#lists.size(solicitacoesAtrasadas)}"></span> solicitações estão atrasadas.</h5>
+						<h5 style="width: 100%"							
+							class="card-title" th:if="${#lists.size(solicitacoesAtrasadas) == 1}"><span th:text="${#lists.size(solicitacoesAtrasadas)}"></span> solicitação está atrasada.</h5>
+						<small class="card-text" th:if="${not #lists.isEmpty(solicitacoesAtrasadas)}">
+							<a th:href="@{/solicitacoes/listar/{statusUrl} (statusUrl= 'atrasadas')}"
+							>Veja mais...</a>
+						</small>
+						
+						<h5 style="width: 100%"	 th:if="${#lists.size(solicitacoesPendentes) > 1}"						
+							class="card-title"><span th:text="${#lists.size(solicitacoesPendentes)}"></span> solicitações estão aguardando a finalização.</h5>
+							<h5 style="width: 100%"	 th:if="${#lists.size(solicitacoesPendentes) == 1}"						
+							class="card-title"><span th:text="${#lists.size(solicitacoesPendentes)}"></span> solicitação está aguardando a finalização.</h5>
+						<small class="card-text mb-2" th:if="${not #lists.isEmpty(solicitacoesPendentes)}">
+							<a th:href="@{/solicitacoes/listar/{statusUrl} (statusUrl= 'pendentes')}"
+							>Veja mais...</a>
+						</small>
+
+
+
+					</div>
+				</div>
+				<div class="card card-aniversario mb-4"
+					th:if="${not #lists.isEmpty(aniversarioAmanha) || not #lists.isEmpty(aniversarioHoje)}">
+					<h5 class="card-header" style="width: 100%">Aniversários</h5>
+					<div class="card-body">
+						<h5 style="width: 100%"
+							th:if="${not #lists.isEmpty(aniversarioHoje) && #lists.size(aniversarioHoje) > 1}"
+							class="card-title">Hoje, os seguintes munícipes fazem
+							aniversário:</h5>
+
+						<h5 style="width: 100%"
+							th:if="${not #lists.isEmpty(aniversarioHoje) && #lists.size(aniversarioHoje) == 1}"
+							class="card-title">Hoje, é o aniversário do munícipe:</h5>
+
+						<span th:if="${not #lists.isEmpty(aniversarioHoje)}"
+							th:each="cliente, i : ${aniversarioHoje}" class="card-text mb-2">
+							<a th:href="@{'/clientes/visualizar/' + ${cliente.id}}"
+							th:text="!${i.last} ? ${cliente.nome} + ', ' : ${cliente.nome}"></a>
+						</span>
+						<h5 style="width: 100%"
+							th:if="${not #lists.isEmpty(aniversarioAmanha) && #lists.size(aniversarioAmanha) > 1}"
+							class="card-title">Amanhã, os seguintes munícipes fazem
+							aniversário:</h5>
+
+						<h5 style="width: 100%"
+							th:if="${not #lists.isEmpty(aniversarioAmanha) && #lists.size(aniversarioAmanha) == 1}"
+							class="card-title">Amanhã, é o aniversário do munícipe:</h5>
+
+						<span th:if="${not #lists.isEmpty(aniversarioAmanha)}"
+							th:each="cliente, i : ${aniversarioAmanha}"
+							class="card-text mb-2"> <a
+							th:href="@{'/clientes/visualizar/' + ${cliente.id}}"
+							th:text="!${i.last} ? ${cliente.nome} + ', ' : ${cliente.nome}"></a>
+
+						</span>
+
+
+
+					</div>
+				</div>
+
+
+				<!-- 								<div class="card-body text-right"> -->
+				<!-- 									<h3 th:text="${solicitacoesAbertas}">156</h3> -->
+				<!-- 									<span>Total de solicitações abertas</span> -->
+				<!-- 								</div> -->
+
+				<!-- 							</div> -->
+				<!-- 							<div class="w-100" style="color: white;"></div> -->
+				<!-- 							<div class="card-footer w-100 text-muted"> -->
+				<!-- 								<a -->
+				<!-- 									th:href="@{/solicitacoes/listar/{statusUrl} (statusUrl= 'abertas')}">Visualizar...</a> -->
+				<!-- 							</div> -->
+
+				<form id="buscar-graficos">
+					<div class="form-row">
+						<div class="form-group col-md-2">
+							<input type="number" min="1900" max="2099" step="1"
+								id="val-ano-resultados" class="form-control" />
+
+						</div>
+						<div class="form-group col-md-2">
+							<a id="enviarGrafico" role="button" class="btn btn-success">Buscar</a>
+						</div>
+
+					</div>
+
+				</form>
+				<div class="chart-parent">
+					<div class="chart-wrapper" id="chart_resultados">
+						<div id="chart_div"></div>
+					</div>
+					<div class="chart-wrapper" id="chart_avisos">
+						<div id="chart_avisos"></div>
+					</div>
+				</div>
+				<div class="chart-parent">
+					<div class="chart-wrapper-pie" id="chart_status_wrapper">
+						<div id="chart_status"></div>
+					</div>
+				</div>
+
+			</div>
+		</main>
+	</section>
+	<script th:src="@{/js/home.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+	var a = [[${atrasadas}]];
+	
+		function carregarAno(){
+			$('#val-ano').on('ready change', function(){
+				var ano = $('#val-ano').val();
+				var aberto = 0;
+				var finalizado = 0;
+				var negativo = 0;
+				var positivo = 0;
+				$("#show-ano").html("")
+				$.get( "/solicitacoes/buscar/data/" + ano, function( result ) {
+					
+					var solicitacoes = result[0];
+					var solucoes = result[1];
+					
+					$.each(solicitacoes, function(k,v){
+						if(v.status == "FINALIZADO"){
+							finalizado += 1;
+						}
+						if(v.status == "ABERTO"){
+							aberto += 1;
+						}
+						
+					});
+					$.each(solucoes, function(k,v){
+						if(v.resultado == "Positivo"){
+							positivo += 1;
+						}
+						if(v.resultado == "Negativo"){
+							negativo += 1;
+						}
+						
+					});
+				
+					$("#show-ano").append('<p><strong>Total de solicitações: ' + solicitacoes.length + '</strong></p>' 
+						+ '<p><strong>Solicitações Finalizadas: ' +  finalizado + '</strong>' +
+						'<a href="/solicitacoes/listar/finalizadas">Visualizar...</a></p>'
+						+ '<p><strong>Solicitações em Andamento: ' +  aberto + '</strong></p>'
+						+ '<p><strong>Solicitações bem Sucedidas: ' +  positivo + '</strong></p>'
+						+ '<p><strong>Solicitações Negativas: ' +  negativo + '</strong></p>');
+					
+					
+				})
+			}).trigger('change');
+		}
+		$(document).ready(function(){
+			
+			var currentYear = moment().year();
+			$("#val-ano").val(currentYear);
+			$("#val-ano-resultados").val(currentYear);
+			carregarAno();
+			
+			 
+	        
+	        
+ 			$('#val-ano-resultados').on('ready change', function(){
+ 				var ano = $('#val-ano-resultados').val();
+				$('#enviarGrafico').attr("href", "/buscar/data/" + ano)
+ 			}).trigger('ready');	
+			
+ 		})
+		
+		
+		google.charts.load('current', {
+// 	        	  callback: function () {
+// 	        		    drawChart();
+// 	        		    $(window).resize(drawChart);
+// 	        		  },
+	        		'packages':['corechart','bar']
+	    });     
+	    google.charts.setOnLoadCallback(drawChart);
+       
+		var grafico = [[${grafico}]];
+    
+        function drawChart() {
+            var data = new google.visualization.arrayToDataTable([
+            	['Mes', 'Positivos',  'Negativos'],
+            	 /*[# th:each="row : ${grafico}"]*/
+               [ [[${row.mes}]], [[${row.positivas}]], [[ ${row.negativas}]]],
+                 /*[/]*/
+            ]);		
+         
+            var options = {'title':'Quantidade de Resultados positivos e negativos',
+//             	width: '100%',
+                'height':300,
+                backgroundColor: '#f2f2f2',
+                vAxis: {
+                		format: '0',
+	                	gridlines:{
+	                		color: 'transparent'
+	                	}
+	                	
+            		},
+            		
+            		 chartArea: {
+            		      // leave room for y-axis labels
+            		      width: '80%'
+            		    },
+            		    legend: {
+            		      position: 'top'
+            		    },
+            		    colors: ['#66de6e', '#f24444']
+            };         
+            if(grafico.length > 0) {
+            	 var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+                 chart.draw(data, options);
+            }else{
+            	$('#chart_div').append(
+            			'<div class="alert alert-danger" role="alert">' +
+            			  	'Não existem dados para o ano pesquisado!' +
+            			'</div>'
+            	);
+            	$('#chart_resultados').css('overflow-x', 'visible')
+            	$('.alert').css('margin-bottom', '0')
+            }
+           
+        }
+        
+        google.charts.load('current', {
+//       	  callback: function () {
+//       		    drawChart();
+//       		    $(window).resize(drawChart);
+//       		  },
+      		'packages':['corechart','bar']
+  });     
+  google.charts.setOnLoadCallback(drawChartAvisos);
+ 
+	var avisos = [[${avisos}]];
+
+  function drawChartAvisos() {
+      var data = new google.visualization.arrayToDataTable([
+      	['Mes', 'Sim',  'Não'],
+      	 /*[# th:each="row : ${avisos}"]*/
+         [ [[${row.mes}]], [[${row.positivas}]], [[ ${row.negativas}]]],
+           /*[/]*/
+      ]);		
+   
+      var options = {'title':'Número de munícipes avisados',
+//       	width: '100%',
+          'height':300,
+          backgroundColor: '#f2f2f2',
+          vAxis: {
+          		format: '0',
+              	gridlines:{
+              		color: 'transparent'
+              	}
+              	
+      		},
+      		
+      		 chartArea: {
+      		      // leave room for y-axis labels
+      		      width: '80%'
+      		    },
+      		    legend: {
+      		      position: 'top'
+      		    },
+      		    colors: ['#66de6e', '#f24444']
+      };         
+      if(avisos.length > 0) {
+      	 var chart = new google.visualization.ColumnChart(document.getElementById('chart_avisos'));
+           chart.draw(data, options);
+      }else{
+      	$('#chart_avisos').append(
+      			'<div class="alert alert-danger" role="alert">' +
+      			  	'Não existem dados para o ano pesquisado!' +
+      			'</div>'
+      	);
+      	$('#chart_avisos').css('overflow-x', 'visible')
+      	$('.alert').css('margin-bottom', '0')
+      }
+     
+  }
+  google.charts.load('current', {
+//	  callback: function () {
+//		    drawChart();
+//		    $(window).resize(drawChart);
+//		  },
+		'packages':['corechart','bar']
+});     
+google.charts.setOnLoadCallback(drawChartStatus);
+
+var status = [[${status}]];
+function drawChartStatus() {
+var data = new google.visualization.arrayToDataTable([
+	['Status', 'Quantidade'],
+	 /*[# th:each="row : ${status}"]*/
+ [ [[${row.valor}]], [[${row.quantidade}]]],
+   /*[/]*/
+]);		
+
+var options = {'title':'Quantidade de Solicitações por Status',
+	//width: '100%',
+  'height':300,
+  backgroundColor: '#f2f2f2',
+  colors: ['orange', 'blue', 'green', 'red'],
+  chartArea: {
+	   width: '98%'
+	 },
+	 titlePosition: 'center',
+  legend: 'labeled', 
+  pieSliceText: 'value'
+};         
+if(status.length > 0) {
+	 var chart = new google.visualization.PieChart(document.getElementById('chart_status'));
+   chart.draw(data, options);
+}else{
+	$('#chart_status_wrapper').append(
+			'<div class="alert alert-danger" role="alert">' +
+			  	'Não existem dados para o ano pesquisado!' +
+			'</div>'
+	);
+	$('#chart_status_wrapper').css('overflow-x', 'visible')
+	$('.alert').css('margin-bottom', '0')
+}
+
+}
+	</script>
+
+
+</body>
+</html>

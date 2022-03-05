@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}" class="no-js">
+<head>
+<meta charset="UTF-8" />
+<title>Ofícios</title>
+<style type="text/css">
+</style>
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<main role="main">
+			<ul class="breadcrumb">
+				<li><a th:href="@{/home}">Dashboard </a></li>
+				<li class="active">Ofícios</li>
+
+			</ul>
+			<div class="container">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div style="display:none;" class="alerta-msg alert alert-danger alert-dismissible fade show"
+							role="alert" id="falha">
+							<i class="oi oi-check"></i> <span> <strong
+								style="color: black"></strong>
+							</span>
+							<button type="button" class="fechar close" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div th:replace="fragments/alert :: alerta-sucesso"></div>
+						<h1>Ofícios</h1>
+						<a class="btn btn-filtro" data-toggle="collapse"
+							href="#filtrosaccordion" role="button" aria-expanded="false"
+							aria-controls="collapseExample"><i class="fas fa-filter mr-2" ></i>Filtros</a>
+					</div>
+				</div>
+				<div class="filtroDasSolicitacoes">
+					<div class="collapse" id="filtrosaccordion">
+						<div class="card card-body-filtros">
+							<form id="buscasAvancadas">
+								<div class="form-row">
+									<div class="form-group col-md-3">
+										<label for="dataInicial">Data Inicial:</label> <input
+											type="date" class="form-control" id="dataInicial"
+											th:name="dataInicial">
+									</div>
+									<div class="form-group col-md-3">
+										<label for="dataFinal">Data Final:</label> <input type="date"
+											class="form-control" id="dataFinal" th:name="dataFinal">
+									</div>
+								</div>
+
+								<div class="btn-filtro-tamanho"
+									style="float: left; width: 95%; transform: translateX(-1.6%)">
+									<a class="btn btn-filtro ml-0" href="#" role="button"
+										id="limpar">Limpar Filtros</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			<div class="container">
+
+				<div class="row">
+					<div class="col-md-12">
+						<table id="table-oficios"
+							class="table table-sm table-striped nowrap"
+							style="width: 100%">
+							<thead class="thead-dark">
+								<tr>
+									<th></th>
+									<th scope="col">Id</th>
+									<th scope="col">Assunto</th>
+									<th scope="col">Data</th>
+									<th scope="col">Ações</th>									
+								</tr>
+							</thead>
+						</table>
+
+					</div>
+				</div>
+				<a class="btn btn-adicionar" href="#" role="button"
+				data-toggle="modal" data-target="#modal-oficio">Adicionar</a> <span
+				th:replace="oficio/modal :: modal-form"></span>
+			</div>
+			
+		</main>
+	</section>
+	<script th:src="@{/js/oficio.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+		var oficio= [[${oficio.id}]];
+		var autoridade =[[${autoridade}]];
+		$(document).ready(function() {
+					
+			if(oficio != null){
+				$("#modal-oficio").modal('show');
+				$(".modal-title").text("Editar Ofício");
+			}
+			if(oficio == null){
+				$(".modal-title").text("Novo Ofício");
+			}
+			if ($("#msg-erro").html() != "") {
+				$("#modal-oficio").modal('show');
+				$("#msg-erro, .invalid-feedback span").css("color", "red");
+			}
+
+			$("#modal-oficio").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#msg-erro").hide();
+				$("#modal-oficio").modal('hide');
+				
+			});
+			
+			$(".btn-adicionar").on("click", function(){
+				$(".form-control").val("");
+				$(".modal-title").text("Novo Ofício");
+			});
+			$('#confirm-modal').on('show.bs.modal', function(){
+				$(".modal-title").text("Excluir Ofício");
+				//$('#subtitulo').text('Todos pacientes que este cliente é dono serão deletados!');
+			})
+		})
+	</script>
+</body>
+</html>

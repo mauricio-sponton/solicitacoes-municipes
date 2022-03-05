@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+.is-invalid {
+	border: 1px solid red !important;
+}
+</style>
+</head>
+<body>
+
+	<!-- Modal -->
+	<div th:fragment="modal-form" class="modal fade" id="modal-andamento"
+		tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLongTitle">Editar
+						Resposta</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<span th:text="${erro}" id="msg-erro"></span>
+					<form th:action="@{/andamentos/salvar/{id} (id = ${lei.id})}"
+						method="POST" th:object="${andamentoLei}">
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="dataResposta">Data</label> <input
+									class="form-control" type="date" id="dataResposta"
+									th:classappend="${#fields.hasErrors('data')} ? 'is-invalid'"
+									th:field="*{data}" />
+								<div class="invalid-feedback">
+									<span th:errors="*{data}"></span>
+								</div>
+							</div>
+							<div class="form-group col-md-8"
+								th:if="${lei.status == T(br.com.solicitacoes.solicitacoes.domain.LeiStatus).CRIADA}">
+								<label for="tipo">Propositura</label> <select 
+									id="tipo" class="form-control" th:field="*{tipo}"
+									th:classappend="${#fields.hasErrors('tipo')} ? 'is-invalid'" readonly>							
+									<option th:value="'propositura'">Propositura</option>		
+
+								</select>
+							</div>
+							<div class="form-group col-md-8"
+								th:if="${lei.status == T(br.com.solicitacoes.solicitacoes.domain.LeiStatus).PROPOSITURA}">
+								<label for="tipo">Aprovado pelo Prefeito?</label> <select
+									id="tipo" class="form-control" th:field="*{tipo}"
+									th:classappend="${#fields.hasErrors('tipo')} ? 'is-invalid'">
+									<option th:value="'Sim'" th:text="Sim"></option>
+									<option th:value="'Nao'" th:text="Não"></option>
+
+								</select>
+							</div>
+							<div class="form-group col-md-8"
+								th:if="${lei.status == T(br.com.solicitacoes.solicitacoes.domain.LeiStatus).VETADO_PREFEITO}">
+								<label for="tipo">Nova Votação</label> <select 
+									id="tipo" class="form-control" th:field="*{tipo}"
+									th:classappend="${#fields.hasErrors('tipo')} ? 'is-invalid'" readonly>							
+									<option th:value="'nova_votacao'">Nova votação</option>								
+
+								</select>
+							</div>
+								<div class="form-group col-md-8"
+								th:if="${lei.status == T(br.com.solicitacoes.solicitacoes.domain.LeiStatus).NOVA_VOTACAO}">
+								<label for="tipo">Aprovado pelos Vereadores?</label> <select
+									id="tipo" class="form-control" th:field="*{tipo}"
+									th:classappend="${#fields.hasErrors('tipo')} ? 'is-invalid'">							
+									<option th:value="'sim_vereadores'" th:text="Sim"></option>
+									<option th:value="'nao_vereadores'" th:text="Não"></option>
+
+								</select>
+							</div>
+						</div>
+					
+						<div class="form-row">
+							<div class="form-group col-md-12">
+								<label for="descricao">Anotações</label>
+								<textarea class="form-control" id="descricao"
+									autofocus="autofocus" th:field="*{descricao}"
+									th:classappend="${#fields.hasErrors('descricao')} ? 'is-invalid'"></textarea>
+								<div class="invalid-feedback">
+									<span th:errors="*{descricao}"></span>
+								</div>
+							</div>
+						</div>
+						<input type="hidden" id="id" class="form-control" th:field="*{id}" />
+						<button type="button" class="btn btn-perigo" data-dismiss="modal"
+							id="cancelar-modal">Cancelar</button>
+						<button type="submit" class="btn btn-sim">Salvar</button>
+
+
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<title>Vereador Rutinaldo Bastos</title>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/image/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/image/favicon-16x16.png}">
+<!-- Icons fontawesome -->
+<link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+	crossorigin="anonymous" rel="stylesheet" />
+<link
+	th:href="@{/webjars/bootstrap/css/bootstrap.min.css(v=${version}) }"
+	rel="stylesheet" />
+<style>
+.bd-placeholder-img {
+	font-size: 1.125rem;
+	text-anchor: middle;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+#errors pre, #senhas{
+	color: red 
+}
+
+@media ( min-width : 768px) {
+	.bd-placeholder-img-lg {
+		font-size: 3.5rem;
+	}
+}
+
+
+</style>
+
+<!-- Custom styles for this template -->
+<link th:href="@{/css/style-login.css(v=${version})}" rel="stylesheet" />
+<script th:src="@{/webjars/jquery/jquery.min.js(v=${version}) }"></script>
+<script
+	th:src="@{/webjars/bootstrap/js/bootstrap.min.js(v=${version}) }"></script>
+	<script th:src="@{/js/jquery.password-validation.js(v=${version})}"></script>
+</head>
+<body>
+<!-- 	<div class="alerta-email"> -->
+		
+<!-- 	</div> -->
+	<form th:action="@{/u/p/nova/senha/}" th:object="${usuario}"
+		class="form-signin was-validated form_login" method="POST" id="login-form-recuperar-senha">
+		<div class="text-center mb-4">
+		<h1>Login</h1>
+			<p class="p-login">Verifique seu e-mail para continuar!</p>
+		</div>
+		<div th:replace="fragments/alert :: alerta-sucesso" ></div>
+
+			<div class="inputWithIcon">
+				<label for="inputEmail" class="label-login">Email</label> <input
+					type="email" id="inputEmail" class="input-login"
+					placeholder="e-mail" th:field="*{email}" required autofocus />
+					<i class="fas fa-envelope"></i>
+				<div class="invalid-feedback"><span>Use seu email como login.</span></div>
+			</div>
+		
+			<div class="inputWithIcon">
+				<label for="senha" class="label-login">Nova Senha</label> <input
+					type="password" id="senha" class="input-login pass"
+					placeholder="Senha" th:field="*{senha}" required />
+					<i class="fas fa-lock"></i>
+				<div class="invalid-feedback"><span>Digite uma nova senha.</span></div>
+			</div>
+			<div class="inputWithIcon">
+				<label for="senha-repetida" class="label-login">Repita a Senha</label> <input
+					type="password" id="senha-repetida" class="input-login pass"
+					placeholder="Senha" required />
+					<i class="fas fa-lock"></i>
+				<div class="invalid-feedback"><span>Digite uma nova senha.</span></div>
+			</div>
+		<pre id="senhas" class="mb-0"></pre> <span id="errors"></span>
+			<div class="inputWithIcon">
+				<label for="inputCodigoVerificador" class="label-login">Código
+					Verificador</label> <input type="text" id="inputCodigoVerificador"
+					class="input-login" placeholder="Código"
+					th:field="*{codigoVerificador}" required />
+						<i class="fas fa-shield-alt"></i>
+				<div class="invalid-feedback"><span>Insira o código que recebeu por
+					e-mail.</span></div>
+			</div>
+		<button class="btn-login btn-2 btn-2a salvar-user" type="submit">Confirmar</button>
+		<nav class="nav nav-pills flex-column flex-sm-row chave">
+			<a class="flex-sm-fill text-sm-left nav-link text-decoration-none"
+				th:href="@{/}"> <i class="fas fa-home"></i>&nbsp;Home
+			</a>
+		</nav>
+	</form>
+	<script type="text/javascript">
+	 $('.pass').on('keyup',function(){
+			if($('#senha').val() != $('#senha-repetida').val()){
+				$('#senhas').show().text('As senhas não são iguais!');
+				$('.salvar-user').prop('disabled', true);
+			}else{
+				$('#senhas').hide();
+				$('.salvar-user').prop('disabled', false);
+			}
+				
+		})
+	
+	$("#senha").passwordValidation({"confirmField": "#senha-repetida"}, function(element, valid, match, failedCases) {
+		  $("#errors").html("<pre>" + failedCases.join("\n") + "</pre>");
+		   if(valid) $(element).css("border","2px solid green");
+		   if(!valid) $(element).css("border","2px solid red");
+		   if(valid && match) $("#senha-repetida").css("border","2px solid green");
+		   if(!valid || !match){
+			   $("#senha-repetida").css("border","2px solid red");		
+			   $('.salvar-user').prop('disabled', true);
+		   }
+		
+	});
+	</script>
+</body>
+</html>

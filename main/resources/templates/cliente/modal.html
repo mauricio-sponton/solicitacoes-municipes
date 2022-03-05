@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+.is-invalid {
+	border: 1px solid red !important;
+}
+</style>
+</head>
+<body>
+
+	<!-- Modal -->
+	<div th:fragment="modal-form" class="modal fade" id="modal-cliente"
+		tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="titulo-cliente">Editar Cliente</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<span th:text="${erro}" id="msg-erro"></span>
+					<form th:action="@{/clientes/salvar}" method="POST"
+						th:object="${cliente}">
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="nome">Nome do Cliente</label> <input type="text"
+									class="form-control" id="nome" placeholder="Nome Completo"
+									autofocus="autofocus" th:field="*{nome}"
+									th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" />
+								<div class="invalid-feedback">
+									<span th:errors="*{nome}"></span>
+								</div>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="email">Email</label> <input type="text"
+									placeholder="Email" class="form-control" id="email"
+									th:field="*{email}"
+									th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" />
+								<div class="invalid-feedback">
+									<span th:errors="*{email}"></span>
+
+								</div>
+							</div>
+
+						</div>
+
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="rg">RG</label> <input type="text"
+									class="form-control" id="rg" placeholder="RG"
+									data-mask="00.000.000-A" autofocus="autofocus" th:field="*{rg}"
+									th:classappend="${#fields.hasErrors('rg')} ? 'is-invalid'" />
+								<div class="invalid-feedback">
+									<span th:errors="*{rg}"></span>
+								</div>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="dataNascimento">Data de Nascimento</label> <input
+									class="form-control" type="date" id="dataNascimento"
+									th:classappend="${#fields.hasErrors('dataNascimento')} ? 'is-invalid'"
+									th:field="*{dataNascimento}" />
+								<div class="invalid-feedback">
+									<span th:errors="*{dataNascimento}"></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-2">
+								<label for="apoiador" class="mb-2">Apoiador?</label> <input
+									data-width="100" id="apoiador" th:field="*{apoiador}"
+									th:if="${apoiador == true ? 'checked=checked' : ''}"
+									type="checkbox" checked data-toggle="toggle"
+									data-style="android" data-onstyle="success"
+									data-offstyle="danger" data-on="Sim" data-off="Não"
+									data-height="38">
+							</div>
+							<div class="form-group col-md-10">
+								<label for="apoiador_desc">Descrição do apoio</label> <input
+									type="text" class="form-control" id="apoiador_desc"
+									placeholder="Apoiador na campanha 2020..."
+									autofocus="autofocus" th:field="*{apoiador_desc}"
+									th:classappend="${#fields.hasErrors('apoiador_desc')} ? 'is-invalid'"
+									readonly />
+								<div class="invalid-feedback">
+									<span th:errors="*{apoiador_desc}"></span>
+								</div>
+							</div>
+						</div>
+						<div class="alert alert-warning erro-tel" role="alert"
+							style="display: none"></div>
+						<div th:if="${fonesCadastrados != null}"
+							th:object="${fonesCadastrados}" id="mostra-tel">
+							<div th:each="telefone, itemStat : *{telefones}">
+								<div class="form-row old-line" id="clone">
+
+									<div class="form-group col-md-6">
+										<label>Telefone</label> <input type="text"
+											class="form-control telefone order"
+											th:name="|telefones[${itemStat.index}].numero|"
+											th:value="${telefone.getNumero()}"
+											th:field="*{telefones[__${itemStat.index}__].numero}" />
+									</div>
+									<div class="form-group col-md-4">
+										<label>Marcador</label> <select
+											class="form-control order-marcador"
+											th:field="*{telefones[__${itemStat.index}__].marcador}"
+											th:value="${telefone.getMarcador()}">
+											<option value="">Selecione</option>
+											<option th:value="Celular" th:text="Celular"></option>
+											<option th:value="Whatsapp" th:text="Whatsapp"></option>
+											<option th:value="Comercial" th:text="Comercial"></option>
+											<option th:value="Residencial" th:text="Residencial"></option>
+										</select>
+									</div>
+									<a class="btn btn-danger mb-2 remove-tel-antigo"
+										id="remove-tel-line" href="#" role="button"><i
+										class="fas fa-trash"></i></a><input type="hidden"
+										th:name="|telefones[${itemStat.index}].id|"
+										th:value="${telefone.getId()}" />
+								</div>
+
+							</div>
+
+						</div>
+
+						<div th:object="${novosFones}" th:if="${novosFones != null}"
+							id="fones">
+							<div id="mostra-tel" th:each="telefone, itemStat : *{telefones}">
+								<div class="form-row" id="clone">
+
+									<div class="form-group col-md-6">
+										<label for="telefone-unico">Telefone</label> <input
+											type="text" class="form-control telefone" id="telefone-unico"
+											th:field="*{telefones[__${itemStat.index}__].numero}"
+											th:classappend="${#fields.hasErrors('telefones[__${itemStat.index}__].numero')} ? 'is-invalid'" />
+										<div class="invalid-feedback">
+											<span th:errors="*{telefones[__${itemStat.index}__].numero}"></span>
+										</div>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="marcador-unico">Marcador</label> <select
+											id="marcador-unico" class="form-control"
+											th:field="*{telefones[__${itemStat.index}__].marcador}">
+											<option value="">Selecione</option>
+											<option th:value="Celular" th:text="Celular"></option>
+											<option th:value="Whatsapp" th:text="Whatsapp"></option>
+											<option th:value="Comercial" th:text="Comercial"></option>
+											<option th:value="Residencial" th:text="Residencial"></option>
+										</select>
+										<div class="invalid-feedback">
+											<span
+												th:errors="*{telefones[__${itemStat.index}__].marcador}"></span>
+										</div>
+									</div>
+									<input type="hidden"
+										th:field="*{telefones[__${itemStat.index}__].id}" />
+
+								</div>
+							</div>
+						</div>
+						<a class="btn btn-success mb-2" id="adiciona-tel" href="#"
+							role="button"><i class="fas fa-plus"></i></a> <a
+							style="display: none" class="btn btn-danger mb-2"
+							id="remove-tel-novo" href="#" role="button"><i
+							class="fas fa-trash"></i></a>
+
+
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="logradouro">Endereço</label> <input type="text"
+									class="form-control" id="logradouro"
+									placeholder="Endereço sem número"
+									th:field="*{endereco.logradouro}"
+									th:classappend="${#fields.hasErrors('endereco.logradouro')} ? 'is-invalid'" />
+								<div class="invalid-feedback">
+									<span th:errors="*{endereco.logradouro}"></span>
+
+								</div>
+							</div>
+							<div class="form-group col-md-2">
+								<label for="numero">Número</label> <input type="text"
+									class="form-control" id="numero" th:field="*{endereco.numero}"
+									th:classappend="${#fields.hasErrors('endereco.numero')} ? 'is-invalid'" />
+								<div class="invalid-feedback">
+									<span th:errors="*{endereco.numero}"></span>
+								</div>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="complemento">Complemento</label> <input type="text"
+									class="form-control" id="complemento"
+									placeholder="fundos, casa, AP. 102, .."
+									th:field="*{endereco.complemento}"
+									th:classappend="${#fields.hasErrors('endereco.complemento')} ? 'is-invalid'" />
+								<div class="invalid-feedback">
+									<span th:errors="*{endereco.complemento}"></span>
+								</div>
+							</div>
+
+
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="bairro">Bairro</label> <input type="text"
+									class="form-control descricao-bairro" id="bairro-cliente"
+									th:field="*{endereco.bairro.descricao}"
+									th:classappend="${#fields.hasErrors('endereco.bairro.descricao')} ? 'is-invalid'" />
+								<div class="invalid-feedback">Selecione o bairro</div>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="cidade">Cidade</label> <input type="text"
+									class="form-control" id="cidade" th:field="*{endereco.cidade}"
+									th:classappend="${#fields.hasErrors('endereco.cidade')} ? 'is-invalid'" />
+								<div class="invalid-feedback">
+									<span th:errors="*{endereco.cidade}"></span>
+								</div>
+							</div>
+
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-2">
+								<label for="cep">Cep</label> <input type="text"
+									class="form-control" id="cep" data-mask="00000-000"
+									th:field="*{endereco.cep}"
+									th:classappend="${#fields.hasErrors('endereco.cep')} ? 'is-invalid'" />
+								<div class="invalid-feedback">
+									<span th:errors="*{endereco.cep}"></span>
+								</div>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="uf">UF</label> <select id="uf" class="form-control"
+									th:field="*{endereco.uf}"
+									th:classappend="${#fields.hasErrors('endereco.uf')} ? 'is-invalid'">
+									<option value="">Selecione...</option>
+									<option th:each="uf: ${ufs}" th:value="${uf}"
+										th:text="${uf.sigla}"></option>
+
+								</select>
+								<div class="invalid-feedback">
+									<span th:errors="*{endereco.uf}"></span>
+								</div>
+							</div>
+
+						</div>
+						<input type="hidden" id="id" class="form-control" th:field="*{id}" />
+						<input type="hidden" id="idEndereco" class="form-control"
+							th:field="*{endereco.id}" /> <input th:if="${url != null}"
+							type="hidden" th:value="${url}" name="url">
+
+						<button type="button" class="btn btn-perigo" data-dismiss="modal"
+							id="cancelar-modal">Cancelar</button>
+						<button type="submit" class="btn btn-sim btn-validacao">Salvar</button>
+
+
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

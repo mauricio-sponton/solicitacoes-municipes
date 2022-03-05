@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+.is-invalid {
+	border: 1px solid red !important;
+}
+</style>
+</head>
+<body>
+
+	<!-- Modal -->
+	<div th:fragment="modal-form" class="modal fade" id="modal-etiqueta"
+		tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="titulo-cliente">Gerar Etiqueta</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<span th:text="${erro}" id="msg-erro"></span>
+					<form target="_blank" th:action="@{/relatorios/pdf/etiqueta/all}" method="get">
+
+						<label for ="remetente">Selecione o remetente</label>
+						<select id="remetente" name="remetente" class="form-control">
+							<option value="">Sem Remetente</option>
+							<option th:each="r : ${remetentes}" th:value="${r.id}"
+								th:text="${r.nome + ' (' + r.logradouro + ' ' + r.numero + ', ' + r.cidade + '/ ' + r.uf +')'}">Selecione
+								o nível</option>
+						</select>
+						<button type="button" class="btn btn-perigo"
+							data-dismiss="modal" id="cancelar-modal-etiqueta">Cancelar</button>
+						<button type="submit" class="btn btn-sim btn-validacao">Salvar</button>
+
+
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

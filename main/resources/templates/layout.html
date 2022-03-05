@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	th:with="version=${#strings.randomAlphanumeric(3)}">
+<head>
+<title>Vereador Rutinaldo Bastos</title>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<!--  <link rel="icon" th:href="@{/image/favicon.png}" />-->
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/image/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/image/favicon-16x16.png}">
+
+<!-- Bootstrap core CSS -->
+<link th:href="@{/webjars/bootstrap/css/bootstrap.min.css(v=${version}) }" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/responsive/2.2.1/css/responsive.dataTables.min.css" rel="stylesheet"/>
+<link href="https://cdn.datatables.net/fixedheader/3.1.8/css/fixedHeader.dataTables.min.css" rel="stylesheet"/>
+<link href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css" rel="stylesheet"/>
+<!-- jQueryUI (autocomplete) -->
+<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet"/>
+<!-- Icons fontawesome -->
+<link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet" />
+<link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+<!-- Custom styles for this template -->
+<link th:href="@{/css/style-home.css(v=${version}) }" rel="stylesheet" />
+<link th:href="@{/css/tabs.css(v=${version}) }" rel="stylesheet" />
+<link th:href="@{/css/tabstyles.css(v=${version}) }" rel="stylesheet" />
+<link th:href="@{/css/bootstrap-multiselect.css(v=${version}) }" rel="stylesheet" />
+ <link th:href="@{/css/styles.css(v=${version}) }" rel="stylesheet"/>
+
+
+
+</head>
+<body  style="min-height: 110vh;" id="body-pd" >
+	<header th:replace="fragments/header :: cabecalho">
+	
+		<div>header</div>
+	</header>
+
+	<div  th:replace="fragments/menu :: menu">
+		<div>menu</div>
+	</div>
+	
+	<div class="layout-main">	
+		<section layout:fragment="corpo">		
+			<div>conteudo principal das páginas</div>
+		</section>		
+	</div>
+	 
+	<span th:replace="fragments/modal-confirm :: modal-confirm"></span>
+	
+	
+
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script th:src="@{/webjars/jquery/jquery.min.js(v=${version}) }"></script>
+	<script	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js(v=${version}) }"></script>
+	<!-- jQueryUI (autocomplete) -->
+	<script src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'></script>
+	<!-- 	Datatables JS -->
+	<script	src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+	<script	src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+	<script	src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+	<script	src="https://cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js"></script>
+	<script	src="https://cdn.datatables.net/fixedheader/3.1.8/js/dataTables.fixedHeader.min.js"></script>
+	<script	src="https://cdn.datatables.net/rowgroup/1.1.2/js/dataTables.rowGroup.min.js"></script>
+	<script	src="https://cdn.datatables.net/buttons/1.6.5/js/dataTables.buttons.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
+	
+	
+	
+	
+
+	<script src="https://rawgit.com/RobinHerbots/jquery.inputmask/3.x/dist/jquery.inputmask.bundle.js"></script>
+	<script th:src="@{/webjars/jquery-mask-plugin/dist/jquery.mask.min.js}"></script>
+	<script src="https://code.highcharts.com/highcharts.src.js"></script>
+	<script src="https://www.gstatic.com/charts/loader.js"></script>
+	<!-- 	MEUS JS -->
+	<script th:src="@{/js/cbpFWTabs.js(v=${version})}"></script>
+	<script th:src="@{/js/jquery.password-validation.js(v=${version})}"></script>
+
+	<script th:src="@{/js/bootstrap-multiselect.js(v=${version})}"></script>
+	<script th:src="@{/js/custom-file-input.js(v=${version})}"></script>
+	<script th:src="@{/js/main.js(v=${version})}"></script>
+	<script th:replace=":: js"></script>
+	<script th:replace=":: inlinescript" th:inline="javascript"></script> 
+	<script src="http://jqueryvalidation.org/files/dist/jquery.validate.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+	
+	
+
+	<script type="text/javascript">
+		$(function() {
+			$('[data-toggle="tooltip"]').tooltip()			
+		});
+		
+		var url = '';
+		$('table').on('click', 'a', function() {		
+			url = $(this).attr('href');
+			
+		});
+		
+		$("#btnOk").on('click', function() {
+				document.location.href = url;		
+		});
+		
+		$("#btnCancel").on('click', function() {
+			url = '';
+		});	
+		
+		$('#apoiador').on('ready change', function() {
+			if($(this).is(':checked')){
+				$('#apoiador_desc').attr('readonly', false)
+			}else{
+				$('#apoiador_desc').attr('readonly', true);
+				$('#apoiador_desc').val("")
+			}
+		}).trigger('change');	
+		(function() {
+
+			[].slice.call( document.querySelectorAll( '.tabs' ) ).forEach( function( el ) {
+				new CBPFWTabs( el );
+			});
+
+		})();
+		
+		$(window).resize(function(){	
+// 				$('#relatorios-menu').attr('href', '/relatorios/listar/' + $(window).width())
+				$('#relatorios-menu').attr('href', '/relatorios/listar/' + $(window).width())
+				
+		})
+		$(document).ready(function(){
+// 			 $('#relatorios-menu').attr('href','/relatorios/listar/' + $(window).width())
+			 $('#relatorios-menu').attr('href','/relatorios/listar/' + $(window).width())
+			$('[data-toggle="popover-hover"]').popover({
+			      html: true,
+			      trigger: 'hover',
+			      placement: 'bottom'	      		   
+		  });	
+			
+			if($('.bairros, .assuntos, .remetentes').hasClass('active')){
+				$('#hasSubItems').attr("aria-expanded","true");
+				 $('#collapsedropdownnav').collapse('show');
+			}
+			
+			var validaCliente = "";
+			var validaBairro = "";
+			var validaAssunto = "";
+			$(".descricao-assunto").autocomplete({	
+				source : function(request, response) {
+					$.ajax({
+						method : "GET",
+// 						url : "/assuntos/titulo",
+						url : "/assuntos/titulo",
+						data : {
+							termo : request.term
+						},
+						success : function(data) {
+							validaAssunto= data;
+							response(data);
+						}
+					})
+				},
+				select: function( event , ui ) {
+					validaAssunto = ui.item.label;	
+		        }
+			});
+			$(".descricao-bairro").autocomplete({	
+				source : function(request, response) {
+					$.ajax({
+						method : "GET",
+// 						url : "/bairros/titulo",
+						url : "/bairros/titulo",
+						data : {
+							termo : request.term
+						},
+						
+						success : function(data) {
+							response(data);
+						}
+						
+					})
+				},
+				select: function( event , ui ) {
+					validaBairro = ui.item.label;	
+		        }
+			
+			});
+			
+			$(".descricao-cliente").autocomplete({	
+				source : function(request, response) {
+					$.ajax({
+						method : "GET",
+// 						url : "/clientes/titulo",
+						url : "/clientes/titulo",
+						data : {
+							termo : request.term
+						},
+						success : function(data) {
+							validaCliente = data;
+							response(data);
+						}
+					})
+				},
+				select: function( event , ui ) {
+					validaCliente = ui.item.label;	
+		        }
+			});
+			$(".descricao-cliente").on('change', function(){
+				if($(this).val() != validaCliente){
+					$(this).addClass('is-invalid');
+					$('.btn-validacao').prop('disabled', true);
+				}else{
+					$(this).removeClass('is-invalid');
+					$('.btn-validacao').prop('disabled', false);
+				}
+			});
+			$(".descricao-assunto").on('change', function(){
+				if($(this).val() != validaAssunto){
+					$(this).addClass('is-invalid');
+					$('.btn-validacao').prop('disabled', true);
+				}else{
+					$(this).removeClass('is-invalid');
+					$('.btn-validacao').prop('disabled', false);
+				}
+			});
+
+				$(".descricao-bairro").on('change', function(){				
+					
+					if($(this).val() != validaBairro){
+						$(this).addClass('is-invalid');
+						$('.btn-validacao').prop('disabled', true);
+					}else{
+						$(this).removeClass('is-invalid');
+						$('.btn-validacao').prop('disabled', false);
+					}
+				});
+			
+				 $('#btn-editar-sm').on('click', function(){
+						var link = $(this).attr('href');
+						document.location.href = link;
+				});
+				 $('#btn-visualizar-sm').on('click', function(){
+						var link = $(this).attr('href');
+						document.location.href = link;
+				});
+
+				 $('#btn-excluir-sm').on('click', function(){
+						url = $(this).attr('href');
+				})
+			
+		});
+		
+		jQuery.fn.dataTable.render.ellipsis = function ( cutoff, wordbreak, escapeHtml ) {
+			 if( $(window).width() <= 2000){
+			var esc = function ( t ) {
+				return t
+					.replace( /&/g, '&amp;' )
+					.replace( /</g, '&lt;' )
+					.replace( />/g, '&gt;' )
+					.replace( /"/g, '&quot;' );
+			};
+
+			return function ( d, type, row ) {
+				// Order, search and type get the original data
+				if ( type !== 'display' ) {
+					return d;
+				}
+
+				if ( typeof d !== 'number' && typeof d !== 'string' ) {
+					return d;
+				}
+
+				d = d.toString(); // cast numbers
+
+				if ( d.length <= cutoff ) {
+					return d;
+				}
+
+				var shortened = d.substr(0, cutoff-1);
+
+				// Find the last white space character in the string
+				if ( wordbreak ) {
+					shortened = shortened.replace(/\s([^\s]*)$/, '');
+				}
+
+				// Protect against uncontrolled HTML input
+				if ( escapeHtml ) {
+					shortened = esc( shortened );
+				}
+
+				return '<span class="ellipsis" data-toggle="popover-hover" data-content="'+esc(d)+'">'+shortened+'&#8230;</span>';
+			};
+			 }
+		};
+		
+		(function(e,t,n){var r=e.querySelectorAll("html")[0];r.className=r.className.replace(/(^|\s)no-js(\s|$)/,"$1js$2")})(document,window,0);
+		
+		function quantidadeBotoes(num, link, objeto){
+			if(num == 2){
+				$('#btn-editar-sm').attr("href", objeto + '/editar/' + link);
+				$('#btn-excluir-sm').attr("href",  objeto + '/excluir/' + link);
+			}
+			
+			if(num == 3){
+				$('#btn-editar-sm').attr("href", objeto + '/editar/' + link);
+				$('#btn-excluir-sm').attr("href",  objeto + '/excluir/' + link);
+				$('#btn-visualizar-sm').attr("href",  objeto + '/visualizar/' + link);
+			}
+		}
+		
+		function fecharRowAoClicarEmBotao(alvo){
+			$(alvo + " tbody").on('click', 'a', function() {  	
+				var tr = $(alvo + " tbody").closest('tr');
+			    var row = table.row( tr );
+			    row.child( format(row.data()), 'no-padding' ).hide();
+			});
+		}
+		
+		function tabelaResponsiva(alvo, table, num, objeto){
+			 $(alvo + " tbody").on('click', 'tr', function () {
+			        var tr = $(this).closest('tr');
+			        tr.addClass('tr-fundo')
+			        var row = table.row( tr );
+			 
+			        var link = row.data().id;
+			        quantidadeBotoes(num, link, objeto)			
+					table.buttons().enable();
+			       
+					if ( row.child.isShown()) {
+			            // This row is already open - close it
+			        	 $('div.slider', row.child()).slideUp( function () {
+			                 row.child.hide();
+			                 tr.removeClass('shown');
+			                 
+			             } );
+			        	 tr.removeClass('tr-fundo');
+			        	 if(!tr.hasClass('tr-fundo')){
+			        		 table.buttons().disable();
+			        	 }
+			        	 
+			        	 quantidadeBotoes(num, link, objeto)
+			 			
+			        }
+			        else {
+			        	if ( table.row( '.shown' ).length ) {
+			                $('.details-control', table.row( '.shown' ).node()).click();
+			        }
+			            // Open this row
+			        	 if(tr.hasClass('tr-fundo')){
+			        		 table.buttons().enable();
+			        	 }
+			        	
+			            row.child( format(row.data()), 'no-padding' ).show();	        
+			            tr.addClass('shown');
+			            $('div.slider', row.child()).slideDown();
+			            $('#inside tbody').on('click', 'tr', function (e){	
+			            	e.stopPropagation();	
+			            			
+			            })   
+			            $('html, body').animate({
+				              scrollTop: $(".slider").offset().top-200
+				          }, 2000);
+			            
+			            quantidadeBotoes(num, link, objeto)
+						
+			        }
+			    } );
+			
+		}
+	</script>
+</body>
+</html>

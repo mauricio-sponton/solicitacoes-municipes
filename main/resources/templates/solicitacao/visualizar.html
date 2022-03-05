@@ -1,0 +1,397 @@
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Dados da Solicitação</title>
+<style type="text/css">
+.historico-wraper {
+	max-height: 300px;
+	background-color: #f2f2f2;
+	overflow: auto;
+}
+
+.container-historico {
+	margin-top: 50px;
+	float: left;
+	width: 100%;
+}
+
+.toggle.android {
+	border-radius: 0px;
+}
+
+.toggle.android .toggle-handle {
+	border-radius: 0px;
+}
+
+.toogle {
+	text-align: left;
+}
+/* width */
+#scrollbar::-webkit-scrollbar {
+	width: 15px;
+}
+
+/* fundo*/
+#scrollbar::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+/* Handle */
+#scrollbar::-webkit-scrollbar-thumb {
+	background: #3399ff;
+}
+
+/* Handle on hover */
+#scrollbar::-webkit-scrollbar-thumb:hover {
+	background: #2957AD;
+}
+
+#mensagem {
+	display: none;
+	width: 100%;
+	background-color: #50B969;
+	padding: 20px;
+	margin-top: 2%;
+}
+
+#mensagem span {
+	color: white;
+	font-weight: bold;
+}
+
+#falha {
+	display: none
+}
+</style>
+</head>
+
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+
+		<ul class="breadcrumb">
+			<li><a th:href="@{/home}">Dashboard </a></li>
+			<li><a th:href="@{/solicitacoes/listar}">Solicitações</a></li>
+			<li class="active"><span th:text="${'Solicitação nº' + solicitacao.id}"></span></li>
+
+		</ul>
+		<div th:replace="fragments/alert :: alerta-sucesso"></div>
+
+
+		<h2 class="titulo-visualizacao-h2">
+			<strong>Dados da Solicitação</strong>
+		</h2>
+		<div
+			class="d-flex justify-content-start justify-content-lg-end justify-content-md-end justify-content-sm-end visualizar-botoes">
+			<a class="status-texto" id="indicado-texto"
+				th:if="${solicitacao.indicado == true}" style="background: green">Indicado</a>
+			<div class="status-texto"
+				th:if="${T(br.com.solicitacoes.solicitacoes.domain.SolicitacaoStatus).PENDENTE == solicitacao.status}"
+				style="background: orange"
+				th:text="${#strings.concat(#strings.substring(solicitacao.status,0,1).toUpperCase(), #strings.substring(solicitacao.status,1).toLowerCase())}">Finalizada</div>
+			<div class="status-texto"
+				th:if="${T(br.com.solicitacoes.solicitacoes.domain.SolicitacaoStatus).FINALIZADO == solicitacao.status}"
+				style="background: blue"
+				th:text="${#strings.concat(#strings.substring(solicitacao.status,0,1).toUpperCase(), #strings.substring(solicitacao.status,1).toLowerCase())}">Finalizada</div>
+			<div class="status-texto"
+				th:if="${T(br.com.solicitacoes.solicitacoes.domain.SolicitacaoStatus).ABERTO == solicitacao.status}"
+				style="background: green"
+				th:text="${#strings.concat(#strings.substring(solicitacao.status,0,1).toUpperCase(), #strings.substring(solicitacao.status,1).toLowerCase())}">Finalizada</div>
+			<div class="status-texto"
+				th:if="${T(br.com.solicitacoes.solicitacoes.domain.SolicitacaoStatus).ATRASADO == solicitacao.status}"
+				style="background: red"
+				th:text="${#strings.concat(#strings.substring(solicitacao.status,0,1).toUpperCase(), #strings.substring(solicitacao.status,1).toLowerCase())}">Finalizada</div>
+			<button class="btn-editar-solicitacao" title="Editar" th:if="${(#authorization.expression('hasAuthority(''ADMIN'')') 
+			&& solicitacao.id != null) || 
+				(#authorization.expression('hasAuthority(''USUARIO'')') && 
+				solicitacao.id != null && 
+				solicitacao.status != T(br.com.solicitacoes.solicitacoes.domain.SolicitacaoStatus).FINALIZADO) }"
+				data-toggle="modal" data-target="#modal-editar"><i class="fas fa-edit"></i></button>
+			<button th:if="${solicitacao.indicado == false}" class="btn-indicar" 
+				title="Indicar" data-toggle="modal" data-target="#modal-indicar">
+				<i class="fas fa-location-arrow"></i>
+			</button>
+			<a th:if="${solucao.id != null}" class="btn-imprimir-solicitacao"
+				target="_blank" role="button"
+				th:href="@{/relatorios/pdf/codigo/{id} (id=${solicitacao.id}, code='solicitacao_id_solucao', tipo='solicitacao')}"
+				title="Imprimir"><i class="fas fa-download"></i></a> <a th:if="${solucao.id == null}"
+				class="btn-imprimir-solicitacao" target="_blank" role="button"
+				th:href="@{/relatorios/pdf/codigo/{id} (id=${solicitacao.id}, code='solicitacao_id', tipo='solicitacao')}"
+				title="Imprimir"><i class="fas fa-download"></i> </a>
+
+		</div>
+
+
+
+
+		<div style="clear: both;"></div>
+		<ul class="cards-solicitacoes">
+			<li><strong>Nome do Municípe: </strong>
+				<p>
+					<a th:href="@{'/clientes/visualizar/' + ${solicitacao.cliente.id}}"
+						th:text="${solicitacao.cliente.nome}"></a>
+				</p> <strong>Assunto:</strong>
+				<p th:text="${solicitacao.assunto.descricao}"></p> <strong>Bairro:</strong>
+				<p th:text="${solicitacao.bairro.descricao}"></p></li>
+
+
+			<li><strong>Data da solicitação:</strong>
+				<p th:text="${#temporals.format(solicitacao.data, 'dd/MM/yyyy')}"></p>
+				<strong>Horário da solicitação:</strong>
+				<p th:text="${#temporals.format(solicitacao.hora, 'HH:mm')}"></p> <strong>Cadastrada
+					por: </strong>
+				<p th:text="${solicitacao.usuario}"></p></li>
+
+			<li><strong>Descrição da Solicitação:</strong>
+				<p th:if="${solicitacao.descricao != ''}"
+					style='white-space: pre-wrap' th:text="${solicitacao.descricao}"></p>
+				<p th:if="${solicitacao.descricao == ''}">Nenhuma informação
+					cadastrada.</p></li>
+
+		</ul>
+
+		<h2 th:if="${solucao.id != null}" class="titulo-visualizacao-h2">
+			Informações da Solução</h2>
+		<div th:if="${solucao.id != null}"
+			class="d-flex justify-content-start justify-content-lg-end justify-content-md-end justify-content-sm-end visualizar-botoes-adicionais">
+			<button class="btn-editar-solicitacao"
+				th:if="${(#authorization.expression('hasAuthority(''ADMIN'')') && solucao.id != null) || 
+				(#authorization.expression('hasAuthority(''USUARIO'')') && 
+				solucao.id != null && 
+				solicitacao.status != T(br.com.solicitacoes.solicitacoes.domain.SolicitacaoStatus).FINALIZADO) }"
+				role="button" data-toggle="modal" data-target="#modal-solucao" title="Editar"><i class="fas fa-edit"></i></button>
+		</div>
+
+
+
+		<div style="clear: both;"></div>
+
+		<ul th:if="${solucao.id != null}" class="cards-solicitacoes">
+
+			<li><strong>Data da Solução:</strong>
+				<p th:text="${#temporals.format(solucao.data, 'dd/MM/yyyy')}"></p> <strong>Horário
+					da Solução:</strong>
+				<p th:text="${#temporals.format(solucao.hora, 'HH:mm')}"></p> <strong>Solucionado
+					por:</strong>
+				<p th:text="${solucao.usuario}"></p></li>
+
+			<li><strong>Munícipe comunicado:</strong>
+				<p th:if="${solucao.aviso == false}">Não</p>
+				<p th:if="${solucao.aviso == true}">Sim</p> <strong>Resultado:</strong>
+				<p th:text="${solucao.resultado}">Positivo</p></li>
+			<li><strong>Descrição da Solução</strong>
+				<p th:if="${solucao.descricao != ''}" style='white-space: pre-wrap'
+					th:text="${solucao.descricao}"></p>
+				<p th:if="${solucao.descricao == ''}">Nenhuma informação
+					cadastrada.</p></li>
+
+		</ul>
+
+		<a th:if="${solucao.id == null}" class="btn btn-adicionar ml-3"
+			href="#" role="button" data-toggle="modal"
+			data-target="#modal-solucao">Solução</a> <a sec:authorize="hasAuthority('ADMIN')"
+			class="btn btn-adicionar ml-3"
+			th:if="${solicitacao.status == T(br.com.solicitacoes.solicitacoes.domain.SolicitacaoStatus).PENDENTE}"
+			href="#" role="button" data-toggle="modal"
+			data-target="#modal-finalizar">Finalizar</a>
+
+		<div class="container-historico mt-0 mb-0">
+
+			<h2 class="titulo-visualizacao-h2 ">
+				<strong>Histórico</strong>
+			</h2>
+			<div style="clear: both;"></div>
+
+			<p>
+
+				<button class="btn btn-filtro btn-historico" type="button"
+					data-toggle="collapse" data-target="#collapseTipo"
+					aria-controls="collapseTipo" title="Filtros">
+					<i class="fas fa-filter" > </i>
+				</button>
+
+			</p>
+			<div
+				class="alerta-msg alert alert-danger alert-dismissible fade show"
+				role="alert" id="falha">
+				<i class="oi oi-check"></i> <span> <strong
+					style="color: black"></strong>
+				</span>
+				<button type="button" class="fechar close" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="collapse mb-2 collapse-historico" id="collapseTipo">
+				<div class="forms-historico">
+					<form>
+						<div class="form-row">
+							<div class="form-group col-md-4 col-sm-10">
+								<select class="form-control" th:name="tipo" aria-label="Search"
+									id="tipo">
+									<option value="">Mostrar Todos</option>
+									<option value="SOLICITACAO_ABERTA">Solicitação aberta</option>
+									<option value="SOLICITACAO_ATRASADA">Solicitação
+										atrasada</option>
+									<option value="SOLICITACAO_PENDENTE">Solicitação
+										pendente</option>
+									<option value="SOLICITACAO_FINALIZADA">Solicitação
+										finalizada</option>
+									<option value="SOLICITACAO_EDIT">Edição dos dados da
+										solicitação</option>
+									<option value="SOLUCAO_EDIT">Edição dos dados da
+										solução</option>
+
+								</select>
+
+							</div>
+
+							<div class="form-group col-md-3">
+								<input class="form-control" type="date" aria-label="Search"
+									th:name="data-inicial" id="data-inicial" />
+							</div>
+							<div class="form-group col-md-3">
+								<input class="form-control" type="date" aria-label="Search"
+									th:name="data-final" id="data-final" />
+							</div>
+
+						</div>
+						<a role="button" href="#" id="reset"
+							class="btn btn-danger my-2 my-sm-0 mr-auto btn-reset-historico">Resetar</a>
+					</form>
+
+				</div>
+			</div>
+
+
+
+
+			<div id="scrollbar" class="historico-wraper">
+				<div id="mensagem">
+					<span>Nenhum registro encontrado</span>
+				</div>
+				<div class="timeline" th:each="h: ${historico}">
+					<div id="busca-estilo"></div>
+
+					<div class="container-esquerdo left generico">
+						<span th:text="${#temporals.format(h.data, 'dd/MM/yyyy')}"></span><br>
+						<span th:text="${#temporals.format(h.hora, 'HH:mm')}"></span>
+					</div>
+					<div class="container-time right generico">
+						<div class="content-1">
+							<div class="content generico">
+								<div class="titulo-historico">
+									<div th:switch="${h.tipo}">
+										<span
+											th:case="${T(br.com.solicitacoes.solicitacoes.domain.HistoricoTipo).SOLICITACAO_ATRASADA}">A
+											solicitação está atrasada</span> <span
+											th:case="${T(br.com.solicitacoes.solicitacoes.domain.HistoricoTipo).SOLICITACAO_ABERTA}">Solicitação
+											Aberta</span> <span
+											th:case="${T(br.com.solicitacoes.solicitacoes.domain.HistoricoTipo).SOLICITACAO_EDIT}">Solicitação
+											Editada</span> <span
+											th:case="${T(br.com.solicitacoes.solicitacoes.domain.HistoricoTipo).SOLUCAO_EDIT}">Solução
+											Editada</span> <span
+											th:case="${T(br.com.solicitacoes.solicitacoes.domain.HistoricoTipo).SOLICITACAO_PENDENTE}">Solicitação
+											Pendente</span> <span
+											th:case="${T(br.com.solicitacoes.solicitacoes.domain.HistoricoTipo).SOLICITACAO_FINALIZADA}">Solicitação
+											Finalizada</span> <span class="data-historico-responsivo"
+											th:text="${#temporals.format(h.data, 'dd/MM/yyyy') + ' às ' + #temporals.format(h.hora, 'HH:mm')}"></span>
+									</div>
+
+								</div>
+								<p>
+									<span id="quebra" style="display: block"
+										th:utext="${#strings.replace(h.descricao, ';' , '<br><br>')}"></span>
+
+								</p>
+
+
+							</div>
+
+						</div>
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<span th:replace="solucao/modal :: modal-form"></span> <span
+			th:replace="solicitacao/modal-editar :: modal-form"></span> <span
+			th:replace="solicitacao/modal-indicar :: modal-form"></span> <span
+			th:replace="solicitacao/modal-finalizar :: modal-form"></span>
+	</section>
+
+
+	<script th:src="@{/js/solicitacao.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+		var solucao = [[${solucao.id}]];
+		var solicitacao = [[${solicitacao.id}]];
+		var solicictacaoObj = [[${solicitacao}]];
+		var indicacaoLink =[[${indicacaoLink}]];
+		var link = [[${link}]];
+		var autoridade = [[${autoridade}]]
+		$(document).ready(function(){
+			
+			if ($("#msg-erro-indicar").html() != "") {
+				$("#modal-indicar").modal('show');
+				$("#msg-erro-indicar, .invalid-feedback span").css("color", "red");
+			}
+			
+			$("#modal-solucao, #modal-indicar, #modal-editar").on("hidden.bs.modal", function() {
+				var link = "/solicitacoes/visualizar/" + solicitacao;
+				document.location.href = link;
+			});
+			
+			if(solicictacaoObj.indicado == true){
+				$('#indicado-texto').attr('href', "/indicacoes/visualizar/" + indicacaoLink)
+			}
+			if(link != null){
+				$('#link-mensagem').attr('href', "/indicacoes/visualizar/" + link)
+			}
+			
+			if(solucao == null){
+				$(".modal-title").text("Nova Solução");
+			}
+			if ($("#msg-erro").html() != "") {
+				$("#modal-solucao").modal('show');
+				$("#msg-erro, .invalid-feedback span").css("color", "red");
+			}
+
+			$("#modal-solucao").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#msg-erro").hide();
+				$("#modal-solucao").modal('hide');
+				
+			});
+			
+			$(".btn-adicionar").on("click", function(){
+				$(".form-control").val("");
+				$(".modal-title").text("Nova Solução");
+			});
+			
+			if($("#msg-erro-solicitacao").html() != ""){
+				$("#modal-editar").modal('show');
+				 if($("#bairro-solicitacao-por-municipe").val() == ""){
+						$("#bairro-solicitacao-por-municipe").addClass('is-invalid');
+					}
+					if($("#assunto-solicitacao-por-municipe").val() == ""){
+						$("#assunto-solicitacao-por-municipe").addClass('is-invalid');
+					}
+					if($("#cliente").val() == ""){
+						$("#cliente").addClass('is-invalid');
+					}
+				 $("#msg-erro-solicitacao, .invalid-feedback span").css("color", "red");
+				 
+			}
+			$("#modal-editar").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#msg-erro-solicitacao").hide();
+			})
+			
+		});
+	</script>
+
+
+</body>
+</html>

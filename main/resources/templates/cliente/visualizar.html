@@ -1,0 +1,807 @@
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Dados do Munícipe</title>
+<style type="text/css">
+.inf-profile p {
+	font-size: 1.1em;
+	color: #9c9797 !important;
+	padding-right: 50px !important;
+	display: inline
+}
+
+.inf-profile .fim {
+	display: block
+}
+
+.inf-profile {
+	float: left;
+	margin-right: 50px;
+	margin-top: 20px;
+	width: 100%
+}
+
+.historico-wraper {
+	max-height: 300px;
+	background-color: #f2f2f2;
+	overflow: auto;
+}
+/* width */
+#scrollbar::-webkit-scrollbar {
+	width: 15px;
+}
+
+/* fundo*/
+#scrollbar::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+/* Handle */
+#scrollbar::-webkit-scrollbar-thumb {
+	background: #3399ff;
+}
+
+/* Handle on hover */
+#scrollbar::-webkit-scrollbar-thumb:hover {
+	background: #2957AD;
+}
+
+.remove-tel, .remove-tel-antigo {
+	background: linear-gradient(to bottom, #f24537 5%, #c62d1f 100%);
+	background-color: #f24537;
+	border: 1px solid #d02718;
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 6px;
+	color: #ffffff;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 6px 13px;
+	text-decoration: none;
+	text-shadow: 0px 1px 0px #810e05;
+	margin: 20px;
+	height: 38px;
+	margin-top: 30px;
+	margin-bottom: 0
+}
+
+#mensagem {
+	display: none;
+	width: 100%;
+	background-color: #50B969;
+	padding: 20px;
+	margin-top: 2%;
+}
+
+#mensagem span {
+	color: white;
+	font-weight: bold;
+}
+
+#falha {
+	display: none
+}
+</style>
+</head>
+
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+
+		<ul class="breadcrumb">
+			<li><a th:href="@{/home}">Dashboard </a></li>
+			<li><a th:href="@{/clientes/listar}">Munícipes</a></li>
+			<li class="active"><span th:text="${cliente.nome}"></span></li>
+
+
+		</ul>
+		<span th:replace="cliente/modal-solicitacaoPorMunicipe :: modal-form"></span>
+		<div th:replace="fragments/alert :: alerta-sucesso"></div>
+
+		<h2 class="titulo-visualizacao-h2" style="font-weight: bold">Dados
+			Pessoais</h2>
+		<div
+			class="d-flex justify-content-start justify-content-lg-end justify-content-md-end justify-content-sm-end visualizar-botoes-adicionais">
+			<div class="status-texto" th:if="${cliente.apoiador == true}"
+				th:text="Apoiador" style="background: indigo">Apoiador</div>
+			<button data-toggle="modal" id="edit" title="Editar" class="btn-editar-solicitacao"
+				data-target="#modal-cliente"><i class="fas fa-edit"></i></button>
+			<span th:replace="cliente/modal :: modal-form"></span> <a
+				class="btn btn-success mt-1 etiqueta" href="#" role="button"
+				id="etiqueta" data-toggle="modal" data-target="#modal-etiqueta" title="Etiqueta"><i
+				class="fas fa-tag"></i></a> <span
+				th:replace="cliente/modal-etiqueta :: modal-form"></span>
+		</div>
+
+		<div style="clear: both;"></div>
+
+		<ul class="cards-solicitacoes">
+			<li><strong>Nome Completo: </strong>
+				<p th:text="${cliente.nome}"></p></li>
+
+			<li th:if="${cliente.rg != ''}"><strong>RG: </strong>
+				<p th:text="${cliente.rg}"></p></li>
+			<li th:if="${cliente.email != ''}"><strong>Email: </strong>
+				<p th:text="${cliente.email}"></p></li>
+			<li th:if="${cliente.dataNascimento != ''}"><strong>Data
+					de nascimento: </strong>
+				<p
+					th:text="${#temporals.format(cliente.dataNascimento, 'dd/MM/yyyy')} + ' ( ' + ${idade} + ' anos )'"></p>
+			</li>
+			<li
+				th:if="${cliente.apoiador_desc != '' && cliente.apoiador_desc != null}">
+				<strong>Descrição do apoio: </strong>
+				<p th:text="${cliente.apoiador_desc}"></p>
+			</li>
+
+
+			<li style="width: 100%"><strong style="display: block">Endereço:
+			</strong>
+				<p th:if="${cliente.endereco.complemento != ''}  "
+					style="display: inline"
+					th:text="${cliente.endereco.logradouro} + ' Nº ' 
+						+ ${cliente.endereco.numero} + ', (' 
+						+${cliente.endereco.complemento} + ') '
+						+ ${cliente.endereco.bairro.descricao} + ', '"></p>
+
+				<p th:if="${cliente.endereco.complemento  == ''} "
+					style="display: inline"
+					th:text="${cliente.endereco.logradouro} + ' Nº ' 
+						+ ${cliente.endereco.numero} + ', ' 
+						+ ${cliente.endereco.bairro.descricao} + ', '"></p>
+
+
+				<p style="display: inline" th:text="${cliente.endereco.cidade}"></p>
+				-
+				<p style="display: inline" th:text="${cliente.endereco.uf}"></p></li>
+
+
+
+
+		</ul>
+
+		<ul class="cards-solicitacoes">
+			<li><strong>Telefones: </strong></li>
+			<li th:each="t : ${telefones}" style="width: 100%">
+				<p style="color: black">
+					<span th:text="${t.numero}"></span> <span class="ml-2"
+						th:text="'( ' + ${t.marcador} + ' )'"></span>
+				</p>
+
+			</li>
+		</ul>
+
+
+
+		<div class="tabs tabs-style-flip">
+			<nav>
+				<ul>
+					<li><a href="#section-flip-1">Histórico</a></li>
+					<li><a href="#section-flip-2">Solicitações</a></li>
+
+				</ul>
+			</nav>
+			<div class="content-wqrap">
+
+				<div class="content-wrap">
+					<section id="section-flip-1">
+						<p>
+
+							<button class="btn btn-filtro" type="button"
+								data-toggle="collapse" data-target="#collapseTipo"
+								aria-controls="collapseTipo" title="Filtros">
+								<i class="fas fa-filter"></i>
+							</button>
+
+						</p>
+						<div
+							class="alerta-msg alert alert-danger alert-dismissible fade show"
+							role="alert" id="falha">
+							<i class="oi oi-check"></i> <span> <strong
+								style="color: black"></strong>
+							</span>
+							<button type="button" class="fechar close" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="collapse mb-2" id="collapseTipo">
+							<div class="forms-historico">
+								<form>
+									<div class="form-row">
+										<div class="col-md-4">
+											<select class="form-group form-control" th:name="tipo"
+												aria-label="Search" id="tipo">
+												<option value="">Mostrar Todos</option>
+												<option value="SOLICITACAO_ABERTA">Nova Solicitação</option>
+												<option value="CLIENTE_NEW">Cadastro no sistema</option>
+												<option value="CLIENTE_EDIT">Informações do
+													munícipe alteradas</option>
+											</select>
+										</div>
+										<div class="col-md-3">
+											<input class="form-group form-control" type="date"
+												aria-label="Search" th:name="data-inicial" id="data-inicial" />
+										</div>
+										<div class="col-md-3">
+											<input class="form-group form-control" type="date"
+												aria-label="Search" th:name="data-final" id="data-final" />
+										</div>
+
+									</div>
+									<a role="button" href="#" id="reset"
+										class="btn btn-danger my-2 my-sm-0 mr-auto btn-reset-historico">Resetar</a>
+								</form>
+
+							</div>
+						</div>
+						<div id="scrollbar" class="historico-wraper">
+							<div id="mensagem">
+								<span>Nenhum registro encontrado</span>
+							</div>
+							<div class="timeline" th:each="h: ${historico}">
+								<div id="busca-estilo"></div>
+
+								<div class="container-esquerdo left generico">
+									<span th:text="${#temporals.format(h.data, 'dd/MM/yyyy')}"></span><br>
+									<span th:text="${#temporals.format(h.hora, 'HH:mm')}"></span>
+								</div>
+								<div class="container-time right generico">
+									<div class="content-1">
+										<div class="content generico">
+											<div class="titulo-historico">
+												<div th:switch="${h.tipo}">
+													<span
+														th:case="${T(br.com.solicitacoes.solicitacoes.domain.HistoricoTipo).CLIENTE_NEW}">
+														Cadastro no sistema</span> <span
+														th:case="${T(br.com.solicitacoes.solicitacoes.domain.HistoricoTipo).CLIENTE_EDIT}">Dados alterados</span> <span
+														th:case="${T(br.com.solicitacoes.solicitacoes.domain.HistoricoTipo).SOLICITACAO_ABERTA}">Nova
+														solicitação</span> <span class="data-historico-responsivo"
+														th:text="${#temporals.format(h.data, 'dd/MM/yyyy') + ' às ' + #temporals.format(h.hora, 'HH:mm')}"></span>
+												</div>
+
+											</div>
+											<p>
+												<span id="quebra" style="display: block"
+													th:utext="${#strings.replace(h.descricao, ';' , '<br><br>')}"></span>
+
+											</p>
+
+
+										</div>
+
+									</div>
+
+
+								</div>
+							</div>
+						</div>
+
+					</section>
+					<section id="section-flip-2">
+
+						<table id="table-solicitacoes"
+							class="table table-sm table-striped nowrap" style="width: 100%">
+							<thead class="thead-dark">
+								<tr>
+									<th></th>
+									<th scope="col">Assunto</th>
+									<th scope="col">Bairro</th>
+									<th scope="col">Usuário</th>
+									<th scope="col">Status</th>
+									<th scope="col">Data</th>
+									<th scope="col">Ações</th>
+								</tr>
+							</thead>
+						</table>
+
+					</section>
+				</div>
+			</div>
+		</div>
+
+	</section>
+
+
+	<script th:src="@{/js/cliente.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+		var searchParams = new URLSearchParams(window.location.search)
+		var idMunicipe = [[${cliente.id}]];
+		var municipe = [[${cliente}]];
+		var solicitacao = [[${solicitacao.id}]];
+		var fonesCadastrados = [[${fonesCadastrados}]];
+		var autoridade = [[${autoridade}]]
+		var solucoes = [[${solucoes}]];
+		$(document).ready(function () {
+			//url = window.location;
+			console.log(window.location)
+			var i = 1;	
+			if(fonesCadastrados != null){
+			
+				fonesCadastrados.telefones.length != 0 ? i = fonesCadastrados.telefones.length : i = 1;
+				var index = i
+			}
+			if(searchParams.has('openmodal')){
+				 $('#modal-cliente').modal('show')
+				 
+			}
+			
+			$('#adiciona-tel').on('click', function(){		
+				$(
+						'<div class="form-row new-line">'+
+							'<div class="form-group col-md-4">'+
+								'<label for="telefone">Telefone</label> <input type="text"'+
+									 'class="form-control telefone order" id="telefone" name="telefones[' + i + '].numero"/>'+
+							'</div>'+
+						'<div class="form-group col-md-4">'+
+							'<label for="marcador">Marcador</label> <select id="marcador" class="form-control order-marcador" name="telefones[' + i + '].marcador">'+
+								'<option value="">Selecione</option>'+
+								'<option value="Celular">Celular</option>'+
+								'<option value="Whatsapp">Whatsapp</option>'+
+								'<option value="Comercial">Comercial</option>'+
+								'<option value="Residencial">Residencial</option>'+
+							'</select>'+						
+						'</div>'+
+						'<input type="hidden" class = "order-id" name="telefones[' + i + '].id"/>'+
+						'<a class="btn btn-danger mb-2 remove-tel" id="remove-tel-line" href="#" role="button"><i class="fas fa-trash"></i></a>'+
+					'</div>'
+					
+					
+				).appendTo($("#mostra-tel")).hide().slideDown("normal");
+				
+				$(".telefone").inputmask({
+        			mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+        			keepStatic: true
+     			 });
+				 i++;
+				 $(".remove-tel").on('click', function(e){					
+						e.preventDefault();
+						var teste = 0;
+						$(this).closest('.new-line, .old-line').remove();
+// 						$(this).closest('.new-line').slideUp("normal",function(){
+// 							$(this).remove();		
+							
+// 						})
+						
+						
+						$('.order').each(function(index){						
+							teste = index + 1
+							if(fonesCadastrados != null){
+								$(this).attr('name','telefones[' + (index) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index) + '].marcador');
+								
+							}else{
+								$(this).attr('name','telefones[' + (index + 1) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index + 1) + '].marcador');
+								$('.order-id').attr('name','telefones[' + (index + 1) + '].id');
+							}
+							
+						})
+						if(fonesCadastrados != null){
+						i=teste
+					}else{
+							i = teste+1
+						}
+						
+						return false;
+					})
+				
+			});
+			 $(".remove-tel-antigo").on('click', function(e){					
+					e.preventDefault();
+					var row = $(this).closest('.new-line, .old-line');
+					var contador = 0;
+// 					$.each($('.new-line, .old-line'), function(k,v){
+// 						contador += 1;
+// 					})	
+// 					if(contador > 1){
+						var id = $(this).next().val();
+						deletarViaNome(id, row);
+						var teste = 0;
+						
+						$('.order').each(function(index){						
+							teste = index + 1
+							if(fonesCadastrados != null){
+								$(this).attr('name','telefones[' + (index) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index) + '].marcador');
+							}else{
+								$(this).attr('name','telefones[' + (index + 1) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index + 1) + '].marcador');
+							}
+							
+						})
+						if(fonesCadastrados != null){
+							i=teste
+						}else{
+							i = teste+1
+						}
+// 					}else{
+// 						$('.erro-tel').show().text("Ao menos um telefone é obrigatório")
+// 					}
+					
+					
+					
+					return false;
+				})
+			
+	$(".telefone").inputmask({
+        mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+        keepStatic: true
+      });
+			if (solicitacao != null) {
+				$("#modal-solicitacaoPorMunicipe").modal('show');
+				$("#modal-solicitacaoPorMunicipe #modal-titulo").text("Nova solicitação");
+			}
+			if ($("#msg-erro").html() != "") {
+				$("#modal-cliente").modal('show');
+				 if($("#bairro-cliente").val() == ""){
+						$("#bairro-cliente").addClass('is-invalid');
+					}
+				$("#msg-erro, .invalid-feedback span").css("color", "red");
+			}
+			if ($("#msg-erro-solicitacao-com-municipe").html() != "") {
+				$("#modal-solicitacaoPorMunicipe").modal('show');
+				 if($("#bairro-solicitacao-por-municipe").val() == ""){
+						$("#bairro-solicitacao-por-municipe").addClass('is-invalid');
+					}
+					if($("#assunto-solicitacao-por-municipe").val() == ""){
+						$("#assunto-solicitacao-por-municipe").addClass('is-invalid');
+					}
+				$("#msg-erro, .invalid-feedback span").css("color", "red");
+			}
+			$("#modal-solicitacaoPorMunicipe").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#msg-erro-solicitacao-com-municipe").hide();	
+				$("#modal-cliente").modal('hide');
+				
+			});
+			
+			$("#modal-cliente").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#msg-erro").hide();			
+				$("#modal-cliente").modal('hide');
+				if(searchParams.has('openmodal')){					
+					 url = window.location.replace(window.location.pathname)		
+				}
+			});
+			
+			
+			moment.locale('pt-BR');
+		    var table = $('#table-solicitacoes').DataTable({
+		    	"language":{
+		    		"lengthMenu": "Mostrando _MENU_ registros por páginas",
+		    		"zeroRecords": "Nenhum registro encontrado",
+		            "info": "Mostrando página _PAGE_ de _PAGES_",
+		            "infoEmpty": " ",
+		            "search": "Pesquise: ",
+		            "searchPlaceholder": "Nome ou Email...",
+		            "paginate": {
+		                "first":      "Primeiro",
+		                "last":       "Ultimo",
+		                "next":       "Próximo",
+		                "previous":   "Anterior"
+		            } 
+		    	},
+		    	searching: true,
+		 
+		    	lengthMenu: [20],
+		    
+		        serverSide: true,
+		        responsive: {
+		            details: false
+		        },
+		        ajax: {
+		            url: '/clientes/datatables/server/municipe/' + idMunicipe,
+		        },
+		        drawCallback: function () {
+		    		  $('[data-toggle="popover-hover"]').popover({
+		  			      html: true,
+		  			      trigger: 'hover',
+		  			      placement: 'right'   
+		  		  });
+		    		  $('.paginate_button:not(.active)', this.api().table().container())          
+		    	         .on('click', function(){
+		    	        	 table.buttons().disable();
+		    	         });   
+		    	    },
+		        columnDefs: [ {
+		              targets: [0, 1, 2],
+		              render: $.fn.dataTable.render.ellipsis( 10 )
+		            }, 
+		            {"width":"5%", "targets": [6]},
+		            {"width":"1%", "targets": [0]}
+		            ],
+		        columns: [
+		        	{orderable: false,
+		                 "className":'details-control',             
+		                 "data":null,
+		                 "defaultContent": '<i class="fas fa-chevron-down" style="color:green; vertical-align: middle;"></i>'
+		             },		        	
+		            {data: 'assunto.descricao'},
+		            {data: 'bairro.descricao'},
+		            {data: 'usuario'},
+		            {orderable: false, data: 'status', render: 
+		            	function ( data, type, row ){
+		            		var colorido = data.substr(0,1).toUpperCase() + data.substr(1).toLowerCase();
+		            		if(row.status == 'FINALIZADO'){
+		            			return '<strong style="color:red">' + colorido + '</strong>';
+		            		}else{
+		            			return '<strong style="color:green">' + colorido + '</strong>';
+		            		}
+		            		
+		            	}
+		            },
+		            {orderable: false, data: 'data', render:
+		                function( data ) {
+		                    return moment(data).format('DD/MM/YYYY');
+		                }
+		            },
+		            {orderable: false, 
+		             data: 'id',
+		                "render": function(data, type, row) {
+		                	var code = "";     
+		                	var editar ="";
+		                	var excluir =""
+		                	if(row.status == "PENDENTE" || row.status == "FINALIZADO"){
+		                		code = "solicitacao_id_solucao";
+		                	}else{
+		                		code = "solicitacao_id";
+		                	}
+		                	if(autoridade != "autoridade"){
+		                		excluir = '<a id="btn-del-cliente" class="btn-tabela  btn-tabela-excluir isDisabled" href="/solicitacoes/excluir/'+ 
+			                    row.id +'/municipe/'+ idMunicipe +'" role="button" data-toggle="modal" data-target="#confirm-modal"><i class="fas fa-trash-alt"></i></a>'
+		                	}else{
+		                		excluir = '<a id="btn-del-cliente" class="btn-tabela  btn-tabela-excluir" href="/solicitacoes/excluir/'+ 
+			                    row.id +'/municipe/'+ idMunicipe +'" role="button" data-toggle="modal" data-target="#confirm-modal"><i class="fas fa-trash-alt"></i></a>'
+		                	}
+		                	if(autoridade != "autoridade" && row.status == "FINALIZADO"){
+		                		editar = '<a class="btn-tabela btn-tabela-editar isDisabled" href="/solicitacoes/editar/'+ 
+		                    	row.id +'/municipe/'+ idMunicipe +'" role="button"><i class="fas fa-edit"></i></a>'
+		                	}else{
+		                		editar = '<a class="btn-tabela btn-tabela-editar" href="/solicitacoes/editar/'+ 
+		                    	row.id +'/municipe/'+ idMunicipe +'" role="button"><i class="fas fa-edit"></i></a>'
+		                	}
+		                	
+		                    return editar  
+		                    + excluir
+		                	+ '<a class="btn-tabela  btn-tabela-view" href="/solicitacoes/visualizar/'+ 
+		                	row.id +'" role="button"><i class="fas fa-eye"></i></a>'
+		                	+ '<a class="btn-tabela  btn-tabela-view" target="_blank" href="/relatorios/pdf/codigo/'+ 
+	                   		row.id +'?code='+ code +'&tipo=solicitacao" role="button"><i class="fas fa-download"></i></a>';
+		                }
+		            }
+		        ],
+		        dom: 'Bfrtip',
+		        buttons: [
+					{
+						text: '<i class="fas fa-edit"></i>',
+						attr: {
+							
+							id: 'btn-editar-sm',
+							type: 'button',
+							class: "btn btn-tabela-responsivo btn-tabela-responsivo-editar",
+							
+						},
+						enabled: false
+					},
+					{
+						text: '<i class="fas fa-trash-alt"></i>',
+						attr: {
+							id: 'btn-excluir-sm',
+							type: 'button',
+							class: "btn btn-tabela-responsivo btn-tabela-responsivo-excluir",
+							"data-toggle":"modal",
+							"data-target":"#confirm-modal"
+						},
+					
+						enabled: false
+					},
+					{
+						text: '<i class="fas fa-eye"></i>',
+						attr: {
+							id: 'btn-visualizar-sm',
+							type: 'button',
+							class: "btn btn-tabela-responsivo  btn-tabela-responsivo-view"
+						},
+						enabled: false
+					}, 
+					{
+						text: '<i class="fas fa-download"></i>',
+						attr: {
+							id: 'btn-download-sm',
+							type: 'button',
+							class: "btn btn-tabela-responsivo btn-tabela-responsivo-view"
+							
+						},
+						enabled: false
+					}, 
+				]
+		    });
+		    table.buttons().disable();
+		    $("#table-solicitacoes thead").on('click', 'tr', function() {		
+				table.buttons().disable();
+			});
+		    
+		    $("#table-solicitacoes tbody").on('click', 'a', function() {
+		    	
+				var tr = $('#table-solicitacoes tbody').closest('tr');
+		        var row = table.row( tr );
+		        row.child( formatSolicitacoes(row.data()), 'no-padding' ).hide();
+			});
+			
+			 $('#table-solicitacoes tbody').on('click', 'tr', function () {
+					
+			        var tr = $(this).closest('tr');
+			        tr.addClass('tr-fundo')
+			        var row = table.row( tr );
+			        
+			        if(autoridade != "autoridade"){
+		        		$('#btn-excluir-sm').addClass('isDisabled')
+		        	}
+			        
+			        if(autoridade != "autoridade" && row.data().status == "FINALIZADO"){
+		        		$('#btn-editar-sm').addClass('isDisabled')
+		        	}
+					if(row.data().status != "FINALIZADO"){
+						
+		        		$('#btn-editar-sm').removeClass('isDisabled')
+		        	}
+			        var code = "";           
+		        	if(row.data().status == "PENDENTE" || row.data().status == "FINALIZADO"){
+		        		code = "solicitacao_id_solucao";
+		        	}else{
+		        		code = "solicitacao_id";
+		        	}
+			 
+			        var link = row.data().id;
+			        $('#btn-editar-sm').attr("href", '/solicitacoes/editar/' + link + '/municipe/' + idMunicipe);
+					$('#btn-excluir-sm').attr("href", '/solicitacoes/excluir/' + link);
+					$('#btn-visualizar-sm').attr("href", '/solicitacoes/visualizar/' + link);
+		 			$('#btn-download-sm').attr("href", '/relatorios/pdf/codigo/' + link + "?code="+code+"&tipo=solicitacao");
+					table.buttons().enable();
+			       
+					if ( row.child.isShown()) {
+			            // This row is already open - close it
+			        	 $('div.slider', row.child()).slideUp( function () {
+			                 row.child.hide();
+			                 tr.removeClass('shown');
+			                 
+			             } );
+			        	 tr.removeClass('tr-fundo');
+			        	 if(!tr.hasClass('tr-fundo')){
+			        		 table.buttons().disable();
+			        	 }
+			        	 if(autoridade != "autoridade" && row.data().status == "FINALIZADO"){
+			         		$('#btn-editar-sm').addClass('isDisabled')
+			         	}
+			 			if(row.data().status != "FINALIZADO"){
+			 				
+			         		$('#btn-editar-sm').removeClass('isDisabled')
+			         	}
+			 			   
+			        	 $('#btn-editar-sm').attr("href", '/solicitacoes/editar/' + link + '/municipe/' + idMunicipe);
+			 			$('#btn-excluir-sm').attr("href", '/solicitacoes/excluir/' + link);
+			 			$('#btn-visualizar-sm').attr("href", '/solicitacoes/visualizar/' + link);
+			  			$('#btn-download-sm').attr("href", '/relatorios/pdf/codigo/' + link + "?code="+code+"&tipo=solicitacao");
+			        }
+			        else {
+			        	if ( table.row( '.shown' ).length ) {
+			                $('.details-control', table.row( '.shown' ).node()).click();
+			        }
+			            // Open this row
+			        	 if(tr.hasClass('tr-fundo')){
+			        		 table.buttons().enable();
+			        	 }
+			        	
+			            row.child( formatSolicitacoes(row.data()), 'no-padding' ).show();	        
+			            tr.addClass('shown');
+			            $('div.slider', row.child()).slideDown();
+			            $('#inside tbody').on('click', 'tr', function (e){	
+			            	e.stopPropagation();	
+			            			
+			            })   
+			            $('html, body').animate({
+				              scrollTop: $(".slider").offset().top-200
+				          }, 2000);
+			            if(autoridade != "autoridade" && row.data().status == "FINALIZADO"){
+			        		$('#btn-editar-sm').addClass('isDisabled')
+			        	}
+						if(row.data().status != "FINALIZADO"){
+							
+			        		$('#btn-editar-sm').removeClass('isDisabled')
+			        	}
+			            $('#btn-editar-sm').attr("href", '/solicitacoes/editar/' + link + '/municipe/' + idMunicipe);
+						$('#btn-excluir-sm').attr("href", '/solicitacoes/excluir/' + link);
+						$('#btn-visualizar-sm').attr("href", '/solicitacoes/visualizar/' + link);
+			 			$('#btn-download-sm').attr("href", '/relatorios/pdf/codigo/' + link + "?code="+code+"&tipo=solicitacao");
+			        }
+			    } );
+			
+			 $('#btn-editar-sm').on('click', function(){
+					var link = $(this).attr('href');
+					document.location.href = link;
+			});
+			 $('#btn-visualizar-sm').on('click', function(){
+					var link = $(this).attr('href');
+					document.location.href = link;
+			});
+			 $('#btn-download-sm').on('click', function(){
+				 	var link = $(this).attr('href');
+					window.open(link, '_blank');
+			});
+			 $('#btn-excluir-sm').on('click', function(){
+					url = $(this).attr('href');
+			})
+		    
+		 });
+		function deletarViaNome(id, row){
+			$.ajax({
+				method : "GET",
+				url : "/clientes/excluir/telefone/" + id + "/cliente/" + idMunicipe,	
+				beforeSend : function(){
+					$(row).last().slideUp("normal", function(){
+						 $(this).remove();					
+					});
+					if(searchParams.has('openmodal')){
+						url = window.location.replace(window.location.pathname + "?openmodal")
+						 
+					}
+					
+				},
+				success : function() {
+					setTimeout(function(){
+						 window.location = window.location.href + "?openmodal";
+			
+				    }, 300)
+				   
+				// alert(fonesCadastrados.telefones.length)
+				}
+				
+			})
+		}
+		function formatSolicitacoes ( d ) {
+
+			
+			
+			var data = moment(d.data).format("DD/MM/YYYY");
+			var status = d.status.substring(0,1).toUpperCase() + d.status.substring(1).toLowerCase();
+			
+			if(d.status == "ABERTO" || d.status == "ATRASADO"){
+				return '<div class="slider"><table id="inside" class="table" style="table-layout: fixed; width: 100%">'+
+				'<tr><td scope="row" class="wrapword"><b>Munícipe: </b>' + d.cliente.nome +'</td>' +
+				'<td class="wrapword"><b>Status: </b>' + status + '</td></tr>'+
+				'<tr><td scope="row" class="wrapword"><b>Bairro: </b>' + d.bairro.descricao + '</td>'+
+				'<td class="wrapword"><b>Assunto: </b>' + d.assunto.descricao + '</td></tr>'+
+				'<tr><td scope="row" class="wrapword"><b>Usuário: </b>' + d.usuario + '</td>'+
+				'<td class="wrapword"><b>Data: </b>' + data + '</td></tr>'+
+				
+				'</table></div>';
+			}else{
+				var aviso = "";
+				var resultado = "";
+				$.each(solucoes, function( index, value ) {       
+					if(d.id == value.solicitacao.id){
+						resultado = value.resultado;
+						aviso = value.aviso == true ? "Sim" : "Não";            		
+					}
+				});	
+				return '<div class="slider"><table id="inside" class="table" style="table-layout: fixed; width: 100%">'+
+				'<tr><td scope="row" class="wrapword"><b>Munícipe: </b>' + d.cliente.nome +'</td>' +
+				'<td class="wrapword"><b>Status: </b>' + status + '</td></tr>'+
+				'<tr><td scope="row" class="wrapword"><b>Bairro: </b>' + d.bairro.descricao + '</td>'+
+				'<td class="wrapword"><b>Assunto: </b>' + d.assunto.descricao + '</td></tr>'+
+				'<tr><td scope="row" class="wrapword"><b>Usuário: </b>' + d.usuario + '</td>'+
+				'<td class="wrapword"><b>Data: </b>' + data + '</td></tr>'+
+				'<tr><td scope="row" class="wrapword"><b>Munícipe Avisado?: </b>' + aviso + '</td>'+
+				'<td class="wrapword"><b>Resultado: </b>' + resultado + '</td></tr>'+
+				
+				'</table></div>';
+				
+			}
+			
+		}
+	</script>
+
+
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           

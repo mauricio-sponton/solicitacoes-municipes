@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+.is-invalid {
+	border: 1px solid red !important;
+}
+</style>
+</head>
+<body>
+
+	<!-- Modal -->
+	<div th:fragment="modal-form" class="modal fade" id="modal-remetente"
+		tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="titulo-remetente">Editar Remetente</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<span th:text="${erro}" id="msg-erro"></span>
+					<form th:action="@{/remetentes/salvar}" method="POST"
+						th:object="${remetente}">					
+							<div class="form-row">
+								<div class="form-group col-md-6">
+									<label for="nome">Nome do Remetente</label> <input type="text"
+										class="form-control" id="nome" placeholder="Nome Completo"
+										autofocus="autofocus" th:field="*{nome}"
+										th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										<span th:errors="*{nome}"></span>
+									</div>
+								</div>								
+							</div>																							
+							<div class="form-row">
+								<div class="form-group col-md-6">
+									<label for="cidade">Cidade</label> <input type="text"
+										class="form-control" id="cidade" th:field="*{cidade}"
+										th:classappend="${#fields.hasErrors('cidade')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										<span th:errors="*{cidade}"></span>
+									</div>
+								</div>
+								<div class="form-group col-md-6">
+									<label for="logradouro">Endereço</label> <input type="text"
+										class="form-control" id="logradouro"
+										placeholder="Endereço sem número"
+										th:field="*{logradouro}"
+										th:classappend="${#fields.hasErrors('logradouro')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										<span th:errors="*{logradouro}"></span>
+
+									</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-md-6">
+									<label for="numero">Número</label> <input type="text"
+										class="form-control" id="numero" th:field="*{numero}"
+										th:classappend="${#fields.hasErrors('numero')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										<span th:errors="*{numero}"></span>
+									</div>
+								</div>
+								<div class="form-group col-md-6">
+									<label for="complemento">Complemento</label> <input type="text"
+										class="form-control" id="complemento"
+										placeholder="fundos, casa, AP. 102, .."
+										th:field="*{complemento}"
+										th:classappend="${#fields.hasErrors('complemento')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										<span th:errors="*{complemento}"></span>
+									</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-md-6">
+									<label for="bairro">Bairro</label> <input type="text"
+										class="form-control descricao-bairro" id="bairro-cliente"
+										th:field="*{bairro}"
+										th:classappend="${#fields.hasErrors('bairro')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										<span th:errors="*{bairro}"></span>
+									</div>
+								</div>
+								<div class="form-group col-md-4">
+									<label for="uf">UF</label> <select id="uf" class="form-control"
+										th:field="*{uf}"
+										th:classappend="${#fields.hasErrors('uf')} ? 'is-invalid'">
+										<option value="">Selecione...</option>
+										<option th:each="uf: ${ufs}" th:value="${uf}"
+											th:text="${uf.sigla}"></option>
+
+									</select>
+									<div class="invalid-feedback">
+										<span th:errors="*{uf}"></span>
+									</div>
+								</div>
+								<div class="form-group col-md-2">
+									<label for="cep">Cep</label> <input type="text"
+										class="form-control" id="cep" data-mask="00000-000"
+										th:field="*{cep}"
+										th:classappend="${#fields.hasErrors('cep')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										<span th:errors="*{cep}"></span>
+									</div>
+								</div>
+							</div>
+						<input type="hidden" id="id" class="form-control" th:field="*{id}" />
+						<button type="button" class="btn btn-perigo"
+							data-dismiss="modal" id="cancelar-modal">Cancelar</button>
+						<button type="submit" class="btn btn-sim btn-validacao">Salvar</button>
+
+
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

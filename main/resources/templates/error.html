@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8" />
+<title>Erro</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link
+	th:href="@{/webjars/bootstrap/css/bootstrap.min.css(v=${version}) }"
+	rel="stylesheet" />
+<link rel="icon" type="image/png" sizes="32x32"
+	th:href="@{/image/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16"
+	th:href="@{/image/favicon-16x16.png}">
+<style type="text/css">
+.main {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+.corpo {
+	width: 400px;
+	background: #fff;
+	border: 2px solid gray;
+	-webkit-box-shadow: 6px 6px 9px -1px rgba(0, 0, 0, 0.81);
+	box-shadow: 6px 6px 9px -1px rgba(0, 0, 0, 0.81);
+}
+
+.corpo img {
+	margin: auto;
+	margin-top: 5%;
+	display: block
+}
+
+.container {
+	margin-top: 10%
+}
+
+.btn-login {
+	margin-top: 2%;
+	width: 100%;
+	border: 1px solid #3399ff;
+	background-color: #3399ff;
+	color: white;
+	font-weight: 600;
+	cursor: pointer;
+	display: block;
+	font-size: 1em;
+	padding: 8px 10px;
+	outline: none;
+	border-radius: 6px;
+	transition: 1s background;
+}
+
+.p-login {
+	color: #535355;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.numero {
+	font-weight: bold;
+	font-size: 1.1em;
+	color: #535355;
+}
+
+.final {
+	margin: 5% 0 10% 0
+}
+
+.btn-login:hover {
+	border: 1px solid #0073e6;
+	background: #0073e6;
+	text-decoration: none;
+	color: white;
+}
+
+.btn-login:focus {
+	outline: none !important
+}
+</style>
+<link th:href="@{/css/style-login.css(v=${version})}" rel="stylesheet" />
+</head>
+<body>
+	<section class="main">
+
+		<div class="corpo">
+			<img th:src="@{/image/logo-rutinaldo.jpg}" style="width: 100px;"
+				class="logo" alt="Logo do Vet System." />
+
+			<div class="container">
+				<div class="text-center">
+					<h1 class="h3 mb-3 font-weight-normal">
+						<i class="oi oi-warning"></i> <span class="numero"
+							th:text="${status}"></span>
+					</h1>
+
+					<i class="fas fa-user-lock"></i>
+					<h5 class="text-danger" th:text="${error}"></h5>
+
+					<div class="final">
+						<span class="p-login" th:text="${message}"></span>
+					</div>
+					<a class="btn-login mb-4" type="button"
+						href="javascript:history.back()">Voltar a página anterior</a>
+
+				</div>
+			</div>
+
+		</div>
+
+
+		<script th:src="~{}" th:fragment="js"></script>
+		<script th:inline="javascript" th:fragment="inlinescript"></script>
+	</section>
+</body>
+</html>

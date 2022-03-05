@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}" class="no-js">
+<head>
+<meta charset="UTF-8" />
+<title>Contatos</title>
+<style type="text/css">
+
+</style>
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<main role="main">
+			<ul class="breadcrumb">
+				<li><a th:href="@{/home}">Dashboard </a></li>
+				<li class="active">Contatos</li>
+
+			</ul>
+			<div class="container">
+
+				<div class="row">
+					<div class="col-md-12">
+
+						<div th:replace="fragments/alert :: alerta-sucesso"></div>
+						<h1>Contatos</h1>
+
+						<form method="post" th:action="@{/contatos/emails}"
+							enctype="multipart/form-data">
+							<span th:text="${erro}" id="msg-erro"></span>
+							<div class="form-row">
+								<div class="form-group col-lg-12">
+									<label for="enviar_emails" style="display: block">Enviar
+										para:</label> <select id="enviar_emails" multiple="multiple"
+										class="multiple-select emails-selection" name="enviar_emails[]">
+										<option th:each="municipe : ${emails}"
+											th:value="${municipe.id}"
+											th:text="${municipe.nome + ' (' + municipe.email +')'}">Selecione
+											o nível</option>
+										<option data-role="divider"></option>
+
+									</select>
+									<div class="invalid-feedback-select">
+										<p>Selecione pelo menos 1 email...</p>
+									</div>
+								</div>
+								
+								</div>
+								
+								<div class="form-row">
+								<div class="form-group col-lg-12">
+									<label for="assunto">Assunto do email:</label> <input
+										type="text" class="form-control" id="assunto" name="assunto"
+										placeholder="Assunto do email..." autofocus="autofocus" />
+									<div class="invalid-feedback">Adicione o assunto do email</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-md-12">
+									<label for="corpo">Mensagem do corpo:</label>
+									<textarea class="form-control" id="corpo" name="corpo"
+										autofocus="autofocus"></textarea>
+									<div class="invalid-feedback">Adicione o corpo do email</div>
+								</div>
+							</div>
+							<div class="form-row">
+
+								<p>(Pressione CTRL para selecionar mais de um arquivo).</p>
+								<input type="file"  id="file-7"
+									class="inputfile inputfile-6"
+									data-multiple-caption="{count} arquivos selecionados"
+									name="files" multiple /> <label for="file-7"><span></span>
+									<strong><i class="fas fa-upload"></i> Escolha as
+										imagens&hellip;</strong></label>
+
+							</div>
+
+							<button type="submit" class="btn btn-sim" id="enviar-email">Enviar</button>
+
+						</form>
+
+
+
+					</div>
+				</div>
+				<!-- 				<a class="btn btn-adicionar" href="#" role="button" -->
+				<!-- 				data-toggle="modal" data-target="#modal-bairro">Salvar</a>  -->
+			</div>
+
+		</main>
+	</section>
+	<script th:src="@{/js/contato.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+	
+		$(document).ready(
+				function() {
+					$('#enviar_emails').multiselect({
+						enableFiltering : true,
+						includeSelectAllOption : true,
+						maxHeight : 400,
+						buttonWidth: '100%',
+						dropUp : true,
+						selectAllText : ' Selecionar todos',
+						filterPlaceholder : 'Pesquisar',
+						nonSelectedText : 'Nenhum selecionado',
+						nSelectedText : 'selecionados',
+						allSelectedText : 'Todos selecionados',
+						numberDisplayed : 1,
+						enableCaseInsensitiveFiltering : true
+					});
+					if ($("#msg-erro").html() != "") {
+						if ($("#assunto").val() == "") {
+							$("#assunto").addClass('is-invalid');
+							$("#msg-erro, .invalid-feedback span").css("color",
+									"red");
+						}
+						if ($("#corpo").val() == "") {
+							$("#corpo").addClass('is-invalid');
+							$("#msg-erro, .invalid-feedback span").css("color",
+									"red");
+						}
+						if ($('#enviar_emails option[value="0"]:selected')) {
+							$(".btn-group").addClass('is-invalid').css(
+									"border-radius", "5px");
+							$(".invalid-feedback-select p").show();
+							$("#msg-erro, .invalid-feedback-select p").css(
+									"color", "#dc3545", "font-size", "80%");
+							$("#msg-erro, .invalid-feedback-select p").css(
+									"font-size", "80%");
+
+						}
+					} else {
+						$(".invalid-feedback-select p").hide();
+					}
+				});
+	</script>
+</body>
+</html>

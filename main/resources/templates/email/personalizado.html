@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<title>Clínica Spring Security</title>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<style>
+a:link, a:visited {
+	background-color: MediumSeaGreen;
+	border: 2px solid;
+	border-radius: 5px;
+	color: white;
+	padding: 14px 25px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+}
+
+a:hover, a:active {
+	background-color: DodgerBlue;
+}
+</style>
+</head>
+<body style="margin: 0; padding: 0;">
+	<h4 class="text-center" th:text="${titulo}" style="width: 100%">
+		<strong>Bem vindo...</strong>
+	</h4>
+	<p th:text="${nome + ', '}" style="width: 100%">
+		<strong>8050jk</strong>
+	</p>
+	<p th:text="${texto}" style="width: 100%; white-space: pre-wrap">Precisamos que confirme seu cadastro...</p>
+
+</body>
+</body>
+</html>

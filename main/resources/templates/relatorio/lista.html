@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Relatórios</title>
+<style type="text/css">
+.slider {
+	display: none;
+}
+.slider-bairro {
+	display: none;
+}
+
+#table-relatorios tbody td.no-padding {
+	padding: 0;
+}
+
+#table-relatorios tbody span {
+	color: black;
+	
+}
+
+#table-relatorios tbody td.no-padding {
+	padding: 0;
+}
+
+#nested th {
+	background: #00c3ff
+}
+.details-control{
+	width: 1px
+}
+.dataTables_scrollBody table {
+    margin-left:0px;
+    
+}
+
+#span-aberto, #span-atrasado, #span-pendente, #span-finalizado {
+	cursor: pointer;
+	color: indigo !important;
+}
+table.dataTable tbody td.no-padding{
+    padding: 0;
+}
+</style>
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<main role="main">
+			<ul class="breadcrumb">
+				<li><a th:href="@{/home}">Dashboard </a></li>
+				<li class="active">Relatórios</li>
+
+			</ul>
+			<div class="container">
+				<div th:replace="fragments/alert :: alerta-sucesso"></div>
+				<h1>Relatórios</h1>
+				<div class="tabs tabs-style-flip">
+					<nav>
+						<ul>
+							<li><a id="flip1" href="#section-flip-1">Munícipes</a></li>
+							<li><a id="flip2" href="#section-flip-2">Bairros</a></li>
+
+						</ul>
+					</nav>
+					<div class="content-wqrap">
+
+						<div class="content-wrap">
+							<section id="section-flip-1">
+								<table id="table-relatorios"
+									class="table table-sm table-striped nowrap" style="width: 100%">
+									<thead class="thead-dark">
+										<tr>
+											<th id="controle"></th>
+											<th scope="col" class="coluna-municipe">Munícipe</th>
+											<th scope="col" class="coluna-aberta">Abertas</th>
+											<th scope="col" class="coluna-atrasada">Atrasadas</th>
+											<th scope="col" class="coluna-pendente">Pendentes</th>
+											<th scope="col" class="coluna-finalizada">Finalizadas</th>
+											<!-- 									<th scope="col">Ações</th> -->
+										</tr>
+									</thead>
+
+								</table>
+
+							</section>
+							<section id="section-flip-2">
+
+								<table id="table-bairros"
+									class="table table-sm table-striped nowrap" style="width: 100%">
+									<thead class="thead-dark">
+										<tr>
+											<th id="controle"></th>
+											<th scope="col">Bairro</th>
+											<th scope="col" class="sum">Abertas</th>
+											<th scope="col">Atrasadas</th>
+											<th scope="col">Pendentes</th>
+											<th scope="col">Finalizadas</th>
+											<!-- 									<th scope="col">Ações</th> -->
+										</tr>
+									</thead>
+
+								</table>
+
+							</section>
+
+						</div>
+					</div>
+				</div>
+				<span th:replace="relatorio/modal-solicitacao :: modal-form"></span>
+			</div>
+
+		</main>
+	</section>
+	<script th:src="@{/js/relatorio.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+	var solicitacoesAbertas = [[${solicitacoesAbertas}]];
+	var solicitacoesFinalizadas = [[${solicitacoesFinalizadas}]];
+	var solicitacoesPendentes = [[${solicitacoesPendentes}]];
+	var solicitacoesAtrasadas = [[${solicitacoesAtrasadas}]];
+	var solicitacao = [[${solicitacao.id}]];
+	var autoridade = [[${autoridade}]];
+	
+	$(window).resize(function(){
+		if (window.matchMedia('(max-width: 774px)').matches){	
+			
+				$('.coluna-finalizada').text("Fin.")
+				$('.coluna-municipe').text("Mun.")
+				$('.coluna-aberta').text("Aber.")
+				$('.coluna-atrasada').text("Atra.")
+				$('.coluna-pendente').text("Pen.")
+			}else{
+				$('.coluna-finalizada').text("Finalizadas")
+				$('.coluna-municipe').text("Munícipe")
+				$('.coluna-aberta').text("Abertas")
+				$('.coluna-atrasada').text("Atrasadas")
+				$('.coluna-pendente').text("Pendentes")
+			}
+	})
+ 		$(document).ready(function() {
+ 			
+ 			
+ 			
+ 			moment.locale('pt-BR');
+ 	
+ 			if(solicitacao != null){
+				$("#modal-solicitacao").modal('show');
+				$(".modal-title").text("Editar Solicitacao");
+			}
+			if(solicitacao == null){
+				$(".modal-title").text("Nova Solicitacao");
+			}
+			if ($("#erro").html() != "") {
+				$("#modal-solicitacao").modal('show');
+				if($("#cliente").val() == ""){
+					$("#cliente").addClass('is-invalid');
+				}
+				if($("#bairro-solicitacao").val() == ""){
+					$("#bairro-solicitacao").addClass('is-invalid');
+				}
+				if($("#assunto-solicitacao").val() == ""){
+					$("#assunto-solicitacao").addClass('is-invalid');
+				}
+				$("erro, .invalid-feedback span").css("color", "red");
+			}
+			
+
+			$("#modal-solicitacao").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#erro").hide();
+				$("#modal-solicitacao").modal('hide');
+				
+			});
+			var tableBairro = $('#table-bairros').DataTable({
+ 		    	
+ 		    	"language":{
+ 		    		"lengthMenu": "Mostrando _MENU_ registros por páginas",
+ 		    		"zeroRecords": "Nenhum registro encontrado",
+ 		            "info": "Mostrando página _PAGE_ de _PAGES_",
+ 		            "infoEmpty": " ",
+ 		            "search": "Pesquise: ",
+ 		            "searchPlaceholder": "Nome ou Email...",
+ 		            "paginate": {
+ 		                "first":      "Primeiro",
+ 		                "last":       "Ultimo",
+ 		                "next":       "Próximo",
+ 		                "previous":   "Anterior"
+ 		            } 
+ 		    	},
+ 		    	
+ 		    	fixedHeader: {
+		            header: true,		        
+		            headerOffset: $(".navbar").outerHeight()
+		            
+		        },
+ 		    	searching: true,
+ 		    	lengthMenu: [20],
+ 		    	
+ 		    	order: [
+ 		    		[ 1, "asc" ]
+ 		    		],
+ 		        serverSide: true,        
+ 		        ajax: {
+ 		            url: '/relatorios/bairros/datatables/server'
+ 		            
+ 		        }, 	
+ 		       drawCallback: function () {     
+  		          var abertos= 0;
+  		          var atrasados =0;
+  		          var pendentes =0;
+  		          var finalizados =0;
+  		          
+  		          var total = solicitacoesAbertas.length + solicitacoesAtrasadas.length + solicitacoesPendentes.length + solicitacoesFinalizadas.length; 
+  		       	  $('#total').html("<b>Total: " + total + " solicitações</b>");
+  		          var soma = $(".b-abertas").text();
+  		        
+  		         	for(var i =0; i< soma.length; i++){
+  		         		abertos+= parseInt(soma[i])		         	
+  		         	}
+  		         	var mensagem = solicitacoesAbertas.length != 0 ? abertos + " de " + solicitacoesAbertas.length : 0
+  		          $('#bairro-aberto').html(mensagem);
+  		          
+  		         var soma = $(".b-atrasadas").text();
+  		         
+ 		         	for(var i =0; i< soma.length; i++){
+ 		         		atrasados+= parseInt(soma[i])		         	
+ 		         	}	     
+ 		         	var mensagem = solicitacoesAtrasadas.length != 0 ? atrasados + " de " + solicitacoesAtrasadas.length : 0
+ 		          $('#bairro-atrasado').html(mensagem);
+ 		          
+ 		          var soma = $(".b-pendentes").text();
+ 		         	for(var i =0; i< soma.length; i++){
+ 		         		pendentes+= parseInt(soma[i])		         	
+ 		         	}	         
+ 		         	var mensagem = solicitacoesPendentes.length != 0 ? pendentes + " de " + solicitacoesPendentes.length : 0
+ 		          $('#bairro-pendente').html(mensagem);
+ 		          
+ 		          var soma = $(".b-finalizadas").text();
+ 		         	for(var i =0; i< soma.length; i++){
+ 		         		finalizados+= parseInt(soma[i])		         	
+ 		         	}	
+ 		         	var mensagem = solicitacoesFinalizadas.length != 0 ? finalizados + " de " + solicitacoesFinalizadas.length : 0
+ 		          $('#bairro-finalizado').html(mensagem);
+  		          
+  		        },   
+ 		        columns: [
+ 		        	 {orderable:false,
+ 		                 "className":'details-control',		                 
+ 		                 "data": null,
+ 		                 "defaultContent": ''
+ 		             },
+ 		            {data: 'descricao'
+ 		               
+ 		            },
+ 		           {orderable:false, data: function(d){
+		            	var i = 0;
+						$.each(solicitacoesAbertas, function( index, value ) {
+							  if(d.id == value.bairro.id){
+								  i += 1	 
+							  }
+						});
+						return i == 0 ? " - " : '<span class="b-abertas" id="span-aberto" href="#">'+ i +'</span>';
+		            	
+		            }},
+		            {orderable:false, data: function(d){
+ 		            	var i = 0;
+						$.each(solicitacoesAtrasadas, function( index, value ) {
+							  if(d.id == value.bairro.id){
+								  i += 1	 
+							  }
+						});
+						return i == 0 ? " - " : '<span class="b-atrasadas" id="span-atrasado" href="#">'+ i +'</span>';
+ 		            	
+ 		            }},
+ 		           {orderable:false, data: function(d){
+		            	var i = 0;
+						$.each(solicitacoesPendentes, function( index, value ) {
+							  if(d.id == value.bairro.id){
+								  i += 1	 
+							  }
+						});
+						return i == 0 ? " - " : '<span class="b-pendentes" id="span-pendente" href="#">'+ i +'</span>';
+		            	
+		            }},
+		            {orderable:false, data: function(d){		        
+ 		            	var i = 0;
+						$.each(solicitacoesFinalizadas, function( index, value ) {
+							  if(d.id == value.bairro.id){
+								  i += 1	 
+							  }
+						});
+						return i == 0 ? " - " : '<span class="b-finalizadas" id="span-finalizado" href="#">'+ i +'</span>';
+ 		            	
+ 		            }}
+ 		           
+ 		            
+ 		        ]
+ 		    });
+	 	$("#table-bairros").append('<tfoot><td></td><td id="total"></td><td id="bairro-aberto"><b>0</b></td><td id="bairro-atrasado"><b>0</b></td><td id="bairro-pendente"><b>0</b></td><td id="bairro-finalizado"><b>0</b></td></tfoot>');
+
+ 		    var table = $('#table-relatorios').DataTable({
+ 		    	
+ 		    	"language":{
+ 		    		"lengthMenu": "Mostrando _MENU_ registros por páginas",
+ 		    		"zeroRecords": "Nenhum registro encontrado",
+ 		            "info": "Mostrando página _PAGE_ de _PAGES_",
+ 		            "infoEmpty": " ",
+ 		            "search": "Pesquise: ",
+ 		            "searchPlaceholder": "Nome ou Email...",
+ 		            "paginate": {
+ 		                "first":      "Primeiro",
+ 		                "last":       "Ultimo",
+ 		                "next":       "Próximo",
+ 		                "previous":   "Anterior"
+ 		            } 
+ 		    	},	
+ 		    	
+ 		    	searching: true,
+ 		    	lengthMenu: [20],
+ 		    	 responsive: {
+ 		            details: false
+ 		        },
+ 		       
+ 		    	order: [
+ 		    		[ 1, "asc" ]
+ 		    		],
+ 		        serverSide: true,        
+ 		        ajax: {
+ 		            url: '/relatorios/datatables/server'
+ 		            
+ 		        }, 
+ 		       fixedHeader: {
+		            header: true,		        
+		            headerOffset: $(".navbar").outerHeight()
+		           
+		        },
+		      
+		        "columnDefs":[	        
+		        	{"width":"1px", "targets": [0]}
+		        	
+		        ],
+ 		       drawCallback: function () {     
+ 		          var abertos= 0;
+ 		          var atrasados =0;
+ 		          var pendentes =0;
+ 		          var finalizados =0;
+ 		          var total = solicitacoesAbertas.length + solicitacoesAtrasadas.length + solicitacoesPendentes.length + solicitacoesFinalizadas.length; 
+ 		       	  $('#total').html("<b>Total: " + total + " solicitações</b>");
+ 		       	  
+ 		          var soma = $(".s-abertas").text();
+ 		        
+ 		         	for(var i =0; i< soma.length; i++){
+ 		         		abertos+= parseInt(soma[i])		         	
+ 		         	}
+ 		         	var mensagem = solicitacoesAbertas.length != 0 ? abertos + " de " + solicitacoesAbertas.length : 0
+ 		          $('#total-aberto').html(mensagem);
+ 		          
+ 		         var soma = $(".s-atrasadas").text();
+ 		         
+		         	for(var i =0; i< soma.length; i++){
+		         		atrasados+= parseInt(soma[i])		         	
+		         	}	     
+		         	var mensagem = solicitacoesAtrasadas.length != 0 ? atrasados + " de " + solicitacoesAtrasadas.length : 0
+		          $('#total-atrasado').html(mensagem);
+		          
+		          var soma = $(".s-pendentes").text();
+		         	for(var i =0; i< soma.length; i++){
+		         		pendentes+= parseInt(soma[i])		         	
+		         	}	         
+		         	var mensagem = solicitacoesPendentes.length != 0 ? pendentes + " de " + solicitacoesPendentes.length : 0
+		          $('#total-pendente').html(mensagem);
+		          
+		          var soma = $(".s-finalizadas").text();
+		         	for(var i =0; i< soma.length; i++){
+		         		finalizados+= parseInt(soma[i])		         	
+		         	}	
+		         	var mensagem = solicitacoesFinalizadas.length != 0 ? finalizados + " de " + solicitacoesFinalizadas.length : 0
+		          $('#total-finalizado').html(mensagem);
+ 		          
+ 		        },          
+ 		        columns: [
+ 		        	 {orderable:false,
+ 		                 "className":'details-control',
+ 		                 "data": null,
+ 		                 "defaultContent": ''
+ 		             },
+ 		            {data: 'id', "render": function ( data, type, row, meta ) {
+ 		                return '<a href="/clientes/visualizar/' +row.id+ '">'+row.nome+'</a>';
+ 		            }},
+ 		           {orderable:false, data: function(d){
+		            	var i = 0;
+						$.each(solicitacoesAbertas, function( index, value ) {
+							  if(d.id == value.cliente.id){
+								  i += 1	 
+							  }
+						});
+						return i == 0 ? " - " : '<span class="s-abertas" id="span-aberto" href="#">'+ i +'</span>';
+		            	
+		            }},
+		            {orderable:false, data: function(d){
+ 		            	var i = 0;
+						$.each(solicitacoesAtrasadas, function( index, value ) {
+							  if(d.id == value.cliente.id){
+								  i += 1	 
+							  }
+						});
+						return i == 0 ? " - " : '<span class="s-atrasadas" id="span-atrasado" href="#">'+ i +'</span>';
+ 		            	
+ 		            }},
+ 		           {orderable:false, data: function(d){
+		            	var i = 0;
+						$.each(solicitacoesPendentes, function( index, value ) {
+							  if(d.id == value.cliente.id){
+								  i += 1	 
+							  }
+						});
+						return i == 0 ? " - " : '<span class="s-pendentes" id="span-pendente" href="#">'+ i +'</span>';
+		            	
+		            }},
+		            {orderable:false, data: function(d){		        
+ 		            	var i = 0;
+						$.each(solicitacoesFinalizadas, function( index, value ) {
+							  if(d.id == value.cliente.id){
+								  i += 1	 
+							  }
+						});
+						return i == 0 ? " - " : '<span class="s-finalizadas" id="span-finalizado" href="#">'+ i +'</span>';
+ 		            	
+ 		            }}
+ 		           
+ 		            
+ 		        ]
+ 		    }); 
+ 		   $("#table-relatorios").append('<tfoot><td></td><td id="total"></td><td id="total-aberto"><b>0</b></td><td id="total-atrasado"><b>0</b></td><td id="total-pendente"><b>0</b></td><td id="total-finalizado"><b>0</b></td></tfoot>');
+ 		 
+			var aux ="";
+			var auxBairro = "";
+ 			 $('#table-relatorios tbody').on('click', 'span', function () {
+ 					var classe = this.className;
+ 			        var tr = $(this).closest('tr');
+ 			        var row = table.row( tr );			            
+ 			        if ( row.child.isShown() && aux == classe) {	
+ 			        	
+ 			            // This row is already open - close it
+ 			        	 $('div.slider', row.child()).slideUp( function () {
+ 			        		 
+ 			                 row.child.hide(); 			   
+ 			                 
+ 			                 tr.removeClass('shown');
+ 			             } ); 			    	
+ 			        }
+ 			        else {
+ 			        	if(classe != "page-link"){
+ 			        		$( "tr" ).each(function() {
+ 	 		 			          var tr = $(this).closest('tr');
+ 	 		 			          var row = table.row(tr);
+ 	 		 			          if (row.child.isShown()) {
+ 	 		 			        	  
+ 	 		 			              row.child.hide();
+ 	 		 			              tr.removeClass('show');
+ 	 		 			   
+ 	 		 			          };
+ 	 		 			      })
+ 			        	}
+ 			        	 
+ 			        	if ( table.row( '.shown' ).length ) {
+ 			                $('.details-control', table.row( '.shown' ).node()).click();
+ 			        	}
+ 			            // Open this row
+ 			            switch(classe){
+ 			            case "s-abertas":
+ 			            	row.child( solicitacoes(row.data()), 'no-padding' ).show();
+ 			            	var id = row.data().id;
+ 			            	tr.addClass('shown');
+ 			            	carregaTabela(id, "green", "ABERTO");
+ 			            	break;
+ 			           
+		 			    case "s-atrasadas":
+		 			    	row.child( solicitacoes(row.data()), 'no-padding' ).show();
+ 			            	var id = row.data().id;
+ 			            	tr.addClass('shown');
+ 			            	carregaTabela(id, "red", "ATRASADO");
+				            break;
+			            
+ 						case "s-pendentes":
+ 							row.child( solicitacoesGroup(row.data()), 'no-padding' ).show();
+ 			            	var id = row.data().id;
+ 			            	tr.addClass('shown');
+ 			            	carregaTabelaGroup(id, "PENDENTE")
+	            			break;
+	            		
+ 						case "s-finalizadas":
+ 							row.child( solicitacoesGroup(row.data()), 'no-padding' ).show();
+ 			            	var id = row.data().id;
+ 			            	tr.addClass('shown');
+ 			            	carregaTabelaGroup(id, "FINALIZADO")
+	            			break;
+	            		}
+ 			           
+ 			          
+ 			           aux = classe;
+ 			            $('div.slider', row.child()).slideDown();	
+ 			           $('html, body').animate({
+ 			              scrollTop: $(".slider").offset().top-200
+ 			          }, 2000);
+ 			            
+ 			        }
+ 			        
+ 			    } );
+			
+			$('#table-bairros tbody').on('click', 'span', function () {			
+					var classe = this.className;
+			        var tr = $(this).closest('tr');			    
+			        var row = tableBairro.row( tr );			 			      
+			        if ( row.child.isShown() && auxBairro == classe) {		        
+			            // This row is already open - close it
+			        	 $('div.slider-bairro', row.child()).slideUp( function () {
+			        		 
+			                 row.child.hide(); 			   			                 
+			                 tr.removeClass('shown');
+			             } ); 			    	
+			        }
+			        else {
+			        	 
+			        	if(classe != "page-link"){
+			        		$( "#table-bairros tr" ).each(function() {
+	 		 			          var tr = $(this).closest('tr');
+	 		 			          var row = tableBairro.row(tr);
+	 		 			          if (row.child.isShown()) {	 		 			    
+	 		 			              row.child.hide();
+	 		 			              tr.removeClass('show');
+	 		 			   
+	 		 			          };
+	 		 			      })
+			        	}
+			        	 
+			        	if ( tableBairro.row( '.shown' ).length ) {
+			                $('.details-control', tableBairro.row( '.shown' ).node()).click();
+			        	}
+			            // Open this row
+			            switch(classe){
+			          
+			            case "b-abertas":		     
+			            	row.child( solicitacoesPorBairro(row.data()), 'no-padding' ).show();		           
+			            	var id = row.data().id;			          
+			            	tr.addClass('shown');
+			            	carregaTabelaPorBairro(id, "green", "ABERTO");
+			            	break;
+			           
+	 			    case "b-atrasadas":
+	 			    	row.child( solicitacoesPorBairro(row.data()), 'no-padding' ).show();
+			            	var id = row.data().id;
+			            	tr.addClass('shown');
+			            	carregaTabelaPorBairro(id, "red", "ATRASADO");
+			            break;
+		            
+						case "b-pendentes":
+							row.child( solicitacoesPorBairroESolucao(row.data()), 'no-padding' ).show();
+			            	var id = row.data().id;
+			            	tr.addClass('shown');
+			            	carregaTabelaPorBairroESolucao(id, "PENDENTE")
+            			break;
+            		
+						case "b-finalizadas":
+							row.child( solicitacoesPorBairroESolucao(row.data()), 'no-padding' ).show();
+			            	var id = row.data().id;
+			            	tr.addClass('shown');
+			            	carregaTabelaPorBairroESolucao(id, "FINALIZADO")
+            			break;
+            		}
+			           
+			          
+			            auxBairro = classe;
+			            $('div.slider-bairro', row.child()).slideDown();	
+			           $('html, body').animate({
+			              scrollTop: $(".slider-bairro").offset().top-200
+			          }, 2000);
+			            
+			        }
+			        
+			    } );
+			
+			$('#flip1').on('click', function(){
+ 				table.fixedHeader.enable();
+ 				tableBairro.fixedHeader.disable();
+ 				table.ajax.reload()
+ 						
+ 			})
+ 			$('#flip2').on('click', function(){
+ 				tableBairro.fixedHeader.enable();
+ 				table.fixedHeader.disable();
+ 				tableBairro.ajax.reload()
+ 			})
+ 			 
+ 		});
+ 	
+		
+ 		
+ 		
+	</script>
+</body>
+</html>

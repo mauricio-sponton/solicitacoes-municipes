@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Munícipes</title>
+<style type="text/css">
+.visualizacao {
+	display: block
+}
+
+.salvar-municipe {
+	display: none
+}
+
+.bordercolor {
+	border-color: #326ba8 !important
+}
+
+.remove-tel, .remove-tel-antigo {
+	background: linear-gradient(to bottom, #f24537 5%, #c62d1f 100%);
+	background-color: #f24537;
+	border: 1px solid #d02718;
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 6px;
+	color: #ffffff;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 6px 13px;
+	text-decoration: none;
+	text-shadow: 0px 1px 0px #810e05;
+	margin: 20px;
+	height: 38px;
+	margin-top: 30px;
+	margin-bottom: 0
+}
+
+main {
+	width: 100%
+}
+</style>
+
+</head>
+<body>
+
+	<section class="layout-content" layout:fragment="corpo">
+		<div id="loader-form" class="pre-load"></div>
+		<ul class="breadcrumb">
+			<li><a th:href="@{/home}">Dashboard</a></li>
+			<li class="active">Munícipes</li>
+
+		</ul>
+		<div class="container">
+			<div
+				class="alerta-msg alert alert-danger alert-dismissible fade show"
+				role="alert" id="falha" style="display: none">
+				<i class="oi oi-check"></i> <span> <strong
+					style="color: black"></strong>
+				</span>
+				<button type="button" class="fechar close" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="col-lg-12">
+
+				<div th:replace="fragments/alert :: alerta-sucesso"></div>
+				<h1>Munícipes</h1>
+				<a class="btn btn-filtro" data-toggle="collapse"
+					href="#filtrosaccordion" role="button" aria-expanded="false"
+					aria-controls="collapseExample"><i class="fas fa-filter mr-2"></i>Filtros</a>
+
+				<div class="filtroDasSolicitacoes">
+					<div class="collapse" id="filtrosaccordion">
+						<div class="card card-body-filtros">
+							<form id="buscasAvancadas">
+								<div class="form-row">
+									<div class="form-group col-md-4">
+										<label for="buscaCliente">Nome:</label> <input type="text"
+											class="form-control" id="buscaCliente" th:name="buscaCliente">
+									</div>
+									<div class="form-group col-md-4">
+										<label for="buscaEmail">Email:</label> <input type="text"
+											class="form-control" id="buscaEmail" th:name="buscaEmail">
+									</div>
+									<div class="form-group col-md-4">
+										<label for="buscaBairro">Bairro:</label> <input type="text"
+											class="form-control" id="buscaBairro" th:name="buscaBairro">
+									</div>
+
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-2">
+										<label for="buscaDia">Dia</label> <input type="number"
+											data-toggle="popover" placeholder="1 até 31"
+											data-placement="bottom"
+											data-content="Os dias devem ser 1 até 31" th:name="buscaDia"
+											id="buscaDia" class="form-control" min="1" max="31" step="1" />
+
+									</div>
+									<div class="form-group col-md-4">
+										<label for="buscaMes">Mês</label> <select th:name="buscaMes"
+											id="buscaMes" class="form-control">
+											<option value="" th:text="Selecione..."></option>
+											<option value="1" th:text="Janeiro"></option>
+											<option value="2" th:text="Fevereiro"></option>
+											<option value="3" th:text="Março"></option>
+											<option value="4" th:text="Abril"></option>
+											<option value="5" th:text="Maio"></option>
+											<option value="6" th:text="Junho"></option>
+											<option value="7" th:text="Julho"></option>
+											<option value="8" th:text="Agosto"></option>
+											<option value="9" th:text="Setembro"></option>
+											<option value="10" th:text="Outubro"></option>
+											<option value="11" th:text="Novembro"></option>
+											<option value="12" th:text="Dezembro"></option>
+										</select>
+									</div>
+									<div class="form-group col-md-2">
+										<label for="buscaAno">Ano</label> <input type="text"
+											th:name="buscaAno" id="buscaAno" class="form-control" />
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-4">
+										<label for="apoiador" style="display: block">Apoiador?</label>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input status" type="radio"
+												th:name="apoiador" value="true" id="apoiador_sim"> <label
+												for="apoiador_sim" class="form-check-label">Sim</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input status" type="radio"
+												th:name="apoiador" value="false" id="apoiador_nao">
+											<label for="apoiador_nao" class="form-check-label">Não</label>
+										</div>
+									</div>
+
+								</div>
+
+								<div class="btn-filtro-tamanho"
+									style="float: left; width: 100%; transform: translateX(-1.6%)">
+									<a class="btn btn-filtro ml-0" href="#" role="button"
+										id="limpar">Limpar Filtros</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<table id="table-clientes"
+					class="table table-sm table-striped nowrap" style="width: 100%">
+					<thead class="thead-dark">
+						<tr>
+							<th></th>
+							<th scope="col">Nome</th>
+							<th scope="col">Email</th>
+							<th scope="col">Apoiador</th>
+							<th scope="col">Ações</th>
+						</tr>
+					</thead>
+				</table>
+				<a class="btn btn-adicionar" href="#" role="button"
+					data-toggle="modal" data-target="#modal-cliente">Adicionar</a> <span
+					th:replace="cliente/modal :: modal-form"></span> <span
+					th:replace="cliente/modal-solicitacao :: modal-form"></span><a
+					class="btn btn-download-relatorio" href="#" role="button"
+					id="abrirRelatorioModal" data-toggle="modal"
+					data-target="#modal-relatorio-dinamico">Gerar PDF</a> <a
+					class="btn btn-excel-relatorio" href="#" role="button"
+					data-toggle="modal" data-target="#modal-relatorio-excel"
+					id="abrirRelatorioModalExcel">Gerar Excel</a> <a
+					class="btn btn-excel-relatorio-etiqueta" href="#" role="button"
+					id="etiqueta" data-toggle="modal" data-target="#modal-etiqueta"><i
+					class="fas fa-tag" style="color: white; margin-right: 5px"></i>Gerar
+					Etiquetas</a> <span
+					th:replace="cliente/modal-etiqueta-all :: modal-form"></span> <span
+					th:replace="cliente/modal-relatorio :: modal-form"></span> <span
+					th:replace="cliente/modal-relatorio-excel :: modal-form"></span>
+			</div>
+		</div>
+
+	</section>
+	<script th:src="@{/js/cliente.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+		var cliente = [[${cliente.id}]];
+		var sucessoModal = [[${sucessoModal}]];
+		var emMemoria = [[${emMemoria}]];
+		var fonesCadastrados = [[${fonesCadastrados}]];
+		var telefones_tabela = [[${telefones_tabela}]];
+		var autoridade = [[${autoridade}]]
+		
+		$(document).ready(function() {
+		
+			document.getElementById('dataNascimento').max = new Date(new Date().getTime()
+				- new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+			console.log(sucessoModal)
+		});
+		
+		$(document).ready(function() {
+			var i = 1;	
+			if(fonesCadastrados != null){
+			
+				fonesCadastrados.telefones.length != 0 ? i = fonesCadastrados.telefones.length : i = 1;
+				var index = i
+			}
+			
+			
+			$('#adiciona-tel').on('click', function(){		
+				$(
+						'<div class="form-row new-line">'+
+							'<div class="form-group col-md-6">'+
+								'<label for="telefone">Telefone</label> <input type="text"'+
+									 'class="form-control telefone order" id="telefone" name="telefones[' + i + '].numero"/>'+
+							'</div>'+
+						'<div class="form-group col-md-4">'+
+							'<label for="marcador">Marcador</label> <select id="marcador" class="form-control order-marcador" name="telefones[' + i + '].marcador">'+
+								'<option value="">Selecione</option>'+
+								'<option value="Celular">Celular</option>'+
+								'<option value="Whatsapp">Whatsapp</option>'+
+								'<option value="Comercial">Comercial</option>'+
+								'<option value="Residencial">Residencial</option>'+
+							'</select>'+						
+						'</div>'+
+						'<input type="hidden" class = "order-id" name="telefones[' + i + '].id"/>'+
+						'<a class="btn btn-danger mb-2 remove-tel" id="remove-tel-line" href="#" role="button"><i class="fas fa-trash"></i></a>'+
+					'</div>'
+					
+					
+				).appendTo($("#mostra-tel")).hide().slideDown("normal");
+				
+				$(".telefone").inputmask({
+        			mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+        			keepStatic: true
+     			 });
+				 i++;
+				 $(".remove-tel").on('click', function(e){					
+						e.preventDefault();
+						var teste = 0;
+						$(this).closest('.new-line, .old-line').remove();
+// 						$(this).closest('.new-line').slideUp("normal",function(){
+// 							$(this).remove();		
+							
+// 						})
+						
+						
+						$('.order').each(function(index){						
+							teste = index + 1
+							if(fonesCadastrados != null){
+								$(this).attr('name','telefones[' + (index) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index) + '].marcador');
+								
+							}else{
+								$(this).attr('name','telefones[' + (index + 1) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index + 1) + '].marcador');
+								$('.order-id').attr('name','telefones[' + (index + 1) + '].id');
+							}
+							
+						})
+						if(fonesCadastrados != null){
+						i=teste
+					}else{
+							i = teste+1
+						}
+						
+						return false;
+					})
+				
+			});
+			 $(".remove-tel-antigo").on('click', function(e){					
+					e.preventDefault();
+					var row = $(this).closest('.new-line, .old-line');
+					var contador = 0;
+// 					$.each($('.new-line, .old-line'), function(k,v){
+// 						contador += 1;
+// 					})	
+// 					if(contador > 1){
+						var id = $(this).next().val();
+						deletarViaNome(id, row);
+						var teste = 0;
+						
+						$('.order').each(function(index){						
+							teste = index + 1
+							if(fonesCadastrados != null){
+								$(this).attr('name','telefones[' + (index) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index) + '].marcador');
+							}else{
+								$(this).attr('name','telefones[' + (index + 1) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index + 1) + '].marcador');
+							}
+							
+						})
+						if(fonesCadastrados != null){
+							i=teste
+						}else{
+							i = teste+1
+						}
+// 					}else{
+// 						$('.erro-tel').show().text("Ao menos um telefone é obrigatório")
+// 					}
+					
+					
+					
+					return false;
+				})
+			
+	$(".telefone").inputmask({
+        mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+        keepStatic: true
+      });
+			if (sucessoModal != null) {
+				$("#modal-solicitacao").modal('show');
+				$("#modal-solicitacao #modal-titulo").text("Informações")
+ 				
+			}
+			if($("#msg-erro-solicitacao").html() != ""){
+				$("#modal-solicitacao").modal('show');
+				 $('.visualizacao').hide();
+				 $('.salvar-municipe').show();
+				 if($("#bairro-solicitacao-por-municipe").val() == ""){
+						$("#bairro-solicitacao-por-municipe").addClass('is-invalid');
+					}
+					if($("#assunto-solicitacao-por-municipe").val() == ""){
+						$("#assunto-solicitacao-por-municipe").addClass('is-invalid');
+					}
+				 $("#msg-erro-solicitacao, .invalid-feedback span").css("color", "red");
+				 
+			}
+			
+			$("#salvar-municipe").on('click', function(){
+	    		  $('.visualizacao').slideToggle();
+	    		  $('.salvar-municipe').slideToggle();
+	    	  })
+	    	$("#fechar-modal").on('click', function(){
+	    		  $('#modal-solicitacao').modal('hide');
+	    	})
+			
+			if(cliente != null){
+				$("#modal-cliente").modal('show');
+				$("#titulo-cliente").text("Editar Cliente");
+			}
+			if(cliente == null){
+				$("#titulo-cliente").text("Novo Cliente");
+			}
+			if ($("#msg-erro").html() != "") {
+				$("#modal-cliente").modal('show');
+				if($("#bairro-cliente").val() == ""){
+					$("#bairro-cliente").addClass('is-invalid');
+				 }
+				$("#msg-erro, .invalid-feedback span").css("color", "red");
+			}
+
+			$("#modal-cliente").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#msg-erro").hide();
+				$("#modal-cliente").modal('hide');
+				url = "/clientes/listar"
+				window.location = url		
+				
+			});
+			
+			$(".btn-adicionar").on("click", function(){
+				$(".form-control").val("");
+				$(".modal-title").text("Novo Cliente");
+			});
+			$('#confirm-modal').on('show.bs.modal', function(){
+				$(".modal-title").text("Excluir Cliente");
+				$('#subtitulo').text('Todas solicitações e indicações referentes a esse munícipe serão deletadas!');
+			})
+		})
+		function deletarViaNome(id, row){
+			$.ajax({
+				method : "GET",
+				url : "/clientes/excluir/telefone/" + id + "/cliente/" + cliente,	
+				beforeSend : function(){
+					$(row).last().slideUp("normal", function(){
+						 $(this).remove();					
+					})
+					
+				},
+				success : function() {
+					setTimeout(function(){
+				      location.reload();
+				    }, 300) 
+				// alert(fonesCadastrados.telefones.length)
+				}
+			})
+		}
+	</script>
+</body>
+</html>

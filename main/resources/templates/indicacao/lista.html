@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Indicações</title>
+<style type="text/css">
+</style>
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+		<main role="main">
+			<ul class="breadcrumb">
+				<li><a th:href="@{/home}">Dashboard </a></li>
+				<li class="active">Indicações</li>
+
+			</ul>
+			
+			
+			<div class="container">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div style="display:none;" class="alerta-msg alert alert-danger alert-dismissible fade show"
+							role="alert" id="falha">
+							<i class="oi oi-check"></i> <span> <strong
+								style="color: black"></strong>
+							</span>
+							<button type="button" class="fechar close" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div th:replace="fragments/alert :: alerta-sucesso"></div>
+						<h1>Indicações</h1>
+						<a class="btn btn-filtro" data-toggle="collapse"
+							href="#filtrosaccordion" role="button" aria-expanded="false"
+							aria-controls="collapseExample"><i class="fas fa-filter mr-2" ></i>Filtros</a>
+					</div>
+				</div>
+				<div class="filtroDasSolicitacoes">
+					<div class="collapse" id="filtrosaccordion">
+						<div class="card card-body-filtros">
+							<form id="buscasAvancadas">
+								<div class="form-row">
+									<div class="form-group col-md-3">
+										<label for="buscaAssunto">Assunto:</label> <input type="text"
+											class="form-control" id="buscaAssunto" th:name="buscaAssunto">
+									</div>
+									<div class="form-group col-md-3">
+										<label for="buscaSessao">Sessão:</label> <input type="text"
+											class="form-control" id="buscaSessao" th:name="buscaSessao">
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-3">
+										<label for="dataInicial">Data Inicial:</label> <input
+											type="date" class="form-control" id="dataInicial"
+											th:name="dataInicial">
+									</div>
+									<div class="form-group col-md-3">
+										<label for="dataFinal">Data Final:</label> <input type="date"
+											class="form-control" id="dataFinal" th:name="dataFinal">
+									</div>
+								</div>
+
+								<div class="btn-filtro-tamanho"
+									style="float: left; width: 95%; transform: translateX(-1.6%)">
+									<a class="btn btn-filtro ml-0" href="#" role="button"
+										id="limpar">Limpar Filtros</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="container">
+
+				<div class="row">
+					<div class="col-md-12">
+						<table id="table-indicacoes"
+							class="table table-sm table-striped nowrap"
+							style="width: 100%">
+							<thead class="thead-dark">
+								<tr>
+									<th></th>
+									<th scope="col">Assunto</th>
+									<th scope="col">Sessão</th>
+									<th scope="col">Data</th>
+									<th scope="col">Solicitação</th>
+									<th scope="col">Ações</th>									
+								</tr>
+							</thead>
+						</table>
+
+					</div>
+				</div>
+				<a class="btn btn-adicionar" href="#" role="button"
+				data-toggle="modal" data-target="#modal-indicacao">Adicionar</a> <span
+				th:replace="indicacao/modal :: modal-form"></span>
+			</div>
+			
+		</main>
+	</section>
+	<script th:src="@{/js/indicacao.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+		var indicacao = [[${indicacao.id}]];
+		var erro = [[${erroSolicitacao}]];
+		var autoridade = [[${autoridade}]];
+		
+		$(document).ready(function() {
+					
+			if(erro != null){
+				$("#modal-indicacao").modal('show');
+				$('#solicitacao').addClass("is-invalid")
+			}
+			if(indicacao != null){
+				$("#modal-indicacao").modal('show');
+				$(".modal-title").text("Editar Indicação");
+			}
+			if(indicacao == null){
+				$(".modal-title").text("Nova Reunião");
+			}
+			if ($("#msg-erro").html() != "") {
+				$("#modal-indicacao").modal('show');
+				$("#msg-erro, .invalid-feedback span").css("color", "red");
+			}
+
+			$("#modal-indicacao").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				$("#msg-erro").hide();
+				$("#erroSolicitacao").hide();
+				$("#modal-indicacao").modal('hide');
+				
+			});
+			
+			$(".btn-adicionar").on("click", function(){
+				$(".form-control").val("");
+				$(".modal-title").text("Nova Indicação");
+			});
+			$('#confirm-modal').on('show.bs.modal', function(){
+				$(".modal-title").text("Excluir Indicação");
+				//$('#subtitulo').text('Todos pacientes que este cliente é dono serão deletados!');
+			})
+		})
+	</script>
+</body>
+</html>

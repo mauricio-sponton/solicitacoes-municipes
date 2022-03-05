@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+
+
+
+<div th:fragment="menu" class="l-navbar" id="nav-bar">
+
+
+	<nav class="nav">
+		<div>
+			<a th:href="@{/home}" class="nav__link"
+				th:classappend="${#httpServletRequest.getRequestURI() == '/home' ? 'active':''}">
+				<i class='bx bx-layer nav__icon'></i> <span class="nav__name">Dashboard</span>
+			</a>
+
+			<div class="nav__list">
+				<a th:href="@{/u/listar}" sec:authorize="hasAuthority('ADMIN')"
+					class="nav__link"
+					th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/u')  ? 'active':''}">
+					<i class='bx bx-user nav__icon'></i> <span class="nav__name">Usuários</span>
+				</a> <a th:href="@{/clientes/listar}" class="nav__link"
+					th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/clientes')  ? 'active':''}">
+					<i class="fas fa-hands-helping nav__icon" style="font-size: 1em"></i>
+					<span class="nav__name">Munícipes</span>
+				</a> <a th:href="@{/solicitacoes/listar}" class="nav__link"
+					th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/solicitacoes')  ? 'active':''}">
+					<i class='bx bx-message-square-detail nav__icon'></i> <span
+					class="nav__name">Solicitações</span>
+				</a> <a href="#" class="nav__link" id="relatorios-menu"
+					th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/relatorios')  ? 'active':''}">
+					<i class='bx bx-line-chart-down nav__icon'></i> <span
+					class="nav__name">Relatórios</span>
+				</a> <a th:href="@{/contatos/mensagens}" class="nav__link"
+					th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/contatos')  ? 'active':''}">
+					<i class='bx bx-mail-send  nav__icon'></i> <span class="nav__name">Contatos</span>
+				</a> <a class="nav__link nav-link-collapse assuntos bairros" href="#"
+					id="hasSubItems" data-toggle="collapse"
+					data-target="#collapsedropdownnav"
+					aria-controls="collapsedropdownnav" aria-expanded="false"><i
+					class='bx bx-plus-circle nav__icon'></i><span class="nav__name">Cadastros</span></a>
+
+				<ul class="nav-second-level collapse sidenav-dropdown"
+					id="collapsedropdownnav">
+
+					<li class="nav-item"><a class="nav__link assuntos"
+						th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/assuntos')  ? 'active':''}"
+						th:href="@{/assuntos/listar}"> Assuntos</a></li>
+
+					<li class="nav-item"><a class="nav__link bairros"
+						th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/bairros')  ? 'active':''}"
+						th:href="@{/bairros/listar}"> Bairros</a></li>
+
+					<li class="nav-item"><a class="nav__link remetentes"
+						th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/remetentes')  ? 'active':''}"
+						th:href="@{/remetentes/listar}"> Remetentes</a></li>
+
+				</ul>
+
+
+
+
+
+				<a th:href="@{/reunioes/listar}" class="nav__link"
+					th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/reunioes')  ? 'active':''}">
+					<i class='bx bx-calendar nav__icon'></i> <span class="nav__name">Reuniões</span>
+				</a> <a th:href="@{/indicacoes/listar}" class="nav__link"
+					th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/indicacoes')  ? 'active':''}">
+					<i class='bx bxs-right-arrow-alt nav__icon '></i> <span
+					class="nav__name">Indicações</span>
+				</a> <a th:href="@{/requerimentos/listar}" class="nav__link"
+					th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/requerimentos')  ? 'active':''}">
+					<i class="fas fa-exchange-alt nav__icon" style="font-size: 1em"></i>
+					<span class="nav__name">Requerimentos</span>
+				</a> <a th:href="@{/oficios/listar}" class="nav__link" 
+					th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/oficios')  ? 'active':''}">
+					<i class="fas fa-clipboard-list nav__icon"></i> <span
+					class="nav__name">Ofícios</span>
+				</a> <a th:href="@{/leis/listar}" class="nav__link"
+					th:classappend="${#strings.contains(#httpServletRequest.getRequestURI(), '/leis')  ? 'active':''}">
+					<i class="fas fa-balance-scale nav__icon" style="font-size: 1em"></i>
+					<span class="nav__name">Projetos de Lei</span>
+				</a>
+			</div>
+		</div>
+
+
+	</nav>
+</div>
+
+
+</html>

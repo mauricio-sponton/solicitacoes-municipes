@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+	<!-- Modal -->
+	<div th:fragment="modal-form" class="modal fade"
+		id="modal-relatorio-dinamico" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-titulo-pdf">Gerar PDF</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div
+						class="alerta-msg alert alert-danger alert-dismissible fade show"
+						role="alert" id="falha-relatorio">
+						<i class="oi oi-check"></i> <span> <strong
+							style="color: black"></strong>
+						</span>
+						<button type="button" class="fechar close" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form th:action="@{/relatorios/pdf/personalizado}" method="get"
+						target="_blank">
+						<div class="form-row">
+							<div class="form-group col-md-3">
+								<label for="relatorioCliente">Nome do Cliente:</label> <input
+									type="text" class="form-control" id="relatorioCliente"
+									name="relatorioCliente">
+							</div>
+							<div class="form-group col-md-3">
+								<label for="relatorioAssunto">Assunto:</label> <input
+									type="text" class="form-control" id="relatorioAssunto"
+									name="relatorioAssunto">
+							</div>
+							<div class="form-group col-md-3">
+								<label for="relatorioUsuario">Nome do Usuário:</label> <input
+									type="text" class="form-control" id="relatorioUsuario"
+									name="relatorioUsuario">
+							</div>
+							<div class="form-group col-md-3">
+								<label for="relatorioBairro">Bairro:</label> <input type="text"
+									class="form-control" id="relatorioBairro"
+									th:name="relatorioBairro">
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="relatorioDataInicial">Data Inicial:</label> <input
+									type="date" class="form-control" id="relatorioDataInicial"
+									name="relatorioDataInicial">
+							</div>
+							<div class="form-group col-md-4">
+								<label for="relatorioDataFinal">Data Final:</label> <input
+									type="date" class="form-control" id="relatorioDataFinal"
+									name="relatorioDataFinal">
+							</div>
+
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="relatorioResultado" style="display: block">Resultado:</label>
+								<div class="form-check form-check-inline">
+
+									<input class="form-check-input resultado" type="radio"
+										name="relatorioResultado" value="Positivo"> <label
+										class="form-check-label">Positivo</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input resultado" type="radio"
+										name="relatorioResultado" value="Negativo"> <label
+										class="form-check-label">Negativo</label>
+								</div>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="" style="display: block">Munícipe avisado?</label>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input aviso" type="radio"
+										name="relatorioAviso" value="true"> <label
+										class="form-check-label">Sim</label>
+								</div>
+								<div class="form-check  form-check-inline">
+									<input class="form-check-input aviso" type="radio"
+										name="relatorioAviso" value="false"> <label
+										class="form-check-label">Não</label>
+								</div>
+
+							</div>
+							<div class="form-group col-md-4">
+								<label for="" style="display: block">Indicada?</label>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input indicada" type="radio"
+										name="relatorioIndicada" value="true"> <label
+										class="form-check-label">Sim</label>
+								</div>
+								<div class="form-check  form-check-inline">
+									<input class="form-check-input indicada" type="radio"
+										name="relatorioIndicada" value="false"> <label
+										class="form-check-label">Não</label>
+								</div>
+
+							</div>
+
+						</div>
+						<div class="form-row" id="controleStatus">
+							<div class="form-group col-md-12">
+								<label for="status" style="display: block">Status:</label>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										name="relatorioStatus" value="ABERTO"> <label
+										class="form-check-label">Aberto</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										name="relatorioStatus" value="ATRASADO"> <label
+										class="form-check-label">Atrasado</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										name="relatorioStatus" value="PENDENTE"> <label
+										class="form-check-label">Pendente</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										name="relatorioStatus" value="FINALIZADO"> <label
+										class="form-check-label">Finalizado </label>
+								</div>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-12">
+								<label for="agrupar" style="display: block">Agrupar:</label>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										name="group" value="solicitacoes-municipe"> <label
+										class="form-check-label">Munícipe</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										name="group" value="solicitacoes-bairro"> <label
+										class="form-check-label">Bairro</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										name="group" value="solicitacoes-assunto"> <label
+										class="form-check-label">Assunto</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										name="group" value="solicitacoes-usuario"> <label
+										class="form-check-label">Usuário</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										name="group" value="solicitacoes-status"> <label
+										class="form-check-label">Status</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										name="group" value="solicitacoes-nogroup" checked> <label
+										class="form-check-label">Não agrupar</label>
+								</div>
+							</div>
+						</div>
+						<input type="hidden" id="carregaGroup" th:name="carregaGroup"
+							value="solicitacoes-nogroup">
+						<button type="button" class="btn btn-perigo" data-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-sim btn-validacao">Relatório</button>
+						<a class="btn btn-filtro" href="#" role="button"
+							style="float: right" id="limpar-modal">Limpar Filtros</a>
+
+					</form>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</body>
+</html>

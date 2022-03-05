@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+.is-invalid {
+	border: 1px solid red !important;
+}
+</style>
+</head>
+<body>
+
+	<!-- Modal -->
+	<div th:fragment="modal-form" class="modal fade" id="modal-solucao"
+		tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLongTitle">Editar
+						Finalização</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<span th:text="${erro}" id="msg-erro"></span>
+					<form
+						th:action="@{/solucoes/salvar/{idSolicitacao} (idSolicitacao = ${solicitacao.id})}"
+						method="POST" th:object="${solucao}">
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="resultado">Resultado</label> <select
+									th:classappend="${#fields.hasErrors('resultado')} ? 'is-invalid'"
+									id="sexo" class="form-control" th:field=*{resultado}>
+									<option value="">Selecione</option>
+									<option th:value="Negativo" th:text="Negativo"></option>
+									<option th:value="Positivo" th:text="Positivo"></option>
+								</select>
+								<div class="invalid-feedback">
+									<span th:errors="*{resultado}"></span>
+								</div>
+							</div>
+							<div class="form-group col-md-4 ml-4">
+							<label for="aviso" class="mb-2">Munícipe avisado?</label>
+								<input data-width="100" id="aviso" th:field="*{aviso}" th:if="${aviso == true ? 'checked=checked' : ''}"
+									type="checkbox" checked data-toggle="toggle"
+									data-style="android" data-onstyle="success"
+									data-offstyle="danger" data-on="Sim" data-off="Não" data-height="38">
+							</div>
+
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-12">
+								<label for="descricao">Anotações</label>
+								<textarea class="form-control" id="descricao"
+									autofocus="autofocus" th:field="*{descricao}"
+									th:classappend="${#fields.hasErrors('descricao')} ? 'is-invalid'"></textarea>
+								<div class="invalid-feedback">
+									<span th:errors="*{descricao}"></span>
+								</div>
+							</div>
+						</div>
+						<input type="hidden" id="id" class="form-control" th:field="*{id}" />
+						<button type="button" class="btn btn-perigo"
+							data-dismiss="modal" id="cancelar-modal">Cancelar</button>
+						<button type="submit" class="btn btn-sim">Salvar</button>
+
+
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

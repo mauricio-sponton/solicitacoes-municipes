@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+	<!-- Modal -->
+	<div th:fragment="modal-form" class="modal fade"
+		id="modal-relatorio-dinamico" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-titulo">Gerar PDF</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div
+						class="alerta-msg alert alert-danger alert-dismissible fade show"
+						role="alert" id="falha-relatorio" style="display: none">
+						<i class="oi oi-check"></i> <span> <strong
+							style="color: black"></strong>
+						</span>
+						<button type="button" class="fechar close" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<form th:action="@{/relatorios/municipes/pdf/personalizado}"
+						method="get" target="_blank">
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="relatorioNome">Nome:</label> <input type="text"
+									class="form-control" id="relatorioNome" name="relatorioNome">
+							</div>
+							<div class="form-group col-md-4">
+								<label for="relatorioEmail">Email:</label> <input type="text"
+									class="form-control" id="relatorioEmail" name="relatorioEmail">
+							</div>
+							<div class="form-group col-md-4">
+								<label for="relatorioBairro">Bairro:</label> <input type="text"
+									class="form-control" id="relatorioBairro"
+									th:name="relatorioBairro">
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-2">
+								<label for="relatorioDia">Dia</label> <input type="number"
+									data-toggle="popover" placeholder="1 até 31"
+									data-placement="bottom"
+									data-content="Os dias devem ser 1 até 31" name="relatorioDia"
+									id="relatorioDia" class="form-control" min="1" max="31" step="1" />
+
+							</div>
+							<div class="form-group col-md-4">
+								<label for="relatorioMes">Mês</label> <select
+									name="relatorioMes" id="relatorioMes" class="form-control">
+									<option value="" th:text="Selecione..."></option>
+									<option value="1" th:text="Janeiro"></option>
+									<option value="2" th:text="Fevereiro"></option>
+									<option value="3" th:text="Março"></option>
+									<option value="4" th:text="Abril"></option>
+									<option value="5" th:text="Maio"></option>
+									<option value="6" th:text="Junho"></option>
+									<option value="7" th:text="Julho"></option>
+									<option value="8" th:text="Agosto"></option>
+									<option value="9" th:text="Setembro"></option>
+									<option value="10" th:text="Outubro"></option>
+									<option value="11" th:text="Novembro"></option>
+									<option value="12" th:text="Dezembro"></option>
+								</select>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="relatorioAno">Ano</label> <input type="text"
+									name="relatorioAno" id="relatorioAno" class="form-control" />
+							</div>
+
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-4">
+								<label for="" style="display: block">Apoiador?</label>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input aviso" type="radio"
+										name="relatorioApoiador" value="true"> <label
+										class="form-check-label">Sim</label>
+								</div>
+								<div class="form-check  form-check-inline">
+									<input class="form-check-input aviso" type="radio"
+										name="relatorioApoiador" value="false"> <label
+										class="form-check-label">Não</label>
+								</div>
+
+							</div>
+						</div>
+						<input type="hidden" id="escondido" name="02" value="02">
+						<button type="button" class="btn btn-perigo" data-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-sim btn-validacao">Relatório</button>
+						
+						<a class="btn btn-filtro" href="#" role="button"
+							style="float: right" id="limpar-modal">Limpar Filtros</a>
+
+					</form>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.w3.org/1999/xhtml" layout:decorate="~{layout}">
+<head>
+<meta charset="UTF-8" />
+<title>Solicitações</title>
+<style type="text/css">
+#table-solicitacoes td {
+	vertical-align: middle;
+	padding-bottom: .8rem;
+	padding-top: .8rem
+}
+
+#row-pendente strong {
+	color: white
+}
+
+.alerta-msg {
+	display: none
+}
+
+.visualizacao {
+	display: block;
+}
+
+.salvar-solicitacao, .salvar-municipe {
+	display: none
+}
+
+.remove-tel, .remove-tel-antigo {
+	background: linear-gradient(to bottom, #f24537 5%, #c62d1f 100%);
+	background-color: #f24537;
+	border: 1px solid #d02718;
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 6px;
+	color: #ffffff;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 6px 13px;
+	text-decoration: none;
+	text-shadow: 0px 1px 0px #810e05;
+	margin: 20px;
+	height: 38px;
+	margin-top: 30px;
+	margin-bottom: 0
+}
+
+
+</style>
+</head>
+<body>
+	<section class="layout-content" layout:fragment="corpo">
+
+		<ul class="breadcrumb">
+			<li><a th:href="@{/home}">Dashboard </a></li>
+			<li class="active">Solicitações</li>
+
+		</ul>
+		<div class="container">
+
+			<div class="row">
+				<div class="col-md-12">
+					<div
+						class="alerta-msg alert alert-danger alert-dismissible fade show"
+						role="alert" id="falha">
+						<i class="oi oi-check"></i> <span> <strong
+							style="color: black"></strong>
+						</span>
+						<button type="button" class="fechar close" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+
+					<div th:replace="fragments/alert :: alerta-sucesso"></div>
+					<h1>Solicitações</h1>
+					<span class="pop-embaixo" data-toggle="popover-hover" data-content="Filtros">
+					<a class="btn btn-filtro" data-toggle="collapse" 
+						href="#filtrosaccordion" role="button" aria-expanded="false"
+						aria-controls="collapseExample"><i class="fas fa-filter mr-2" ></i>Filtros</a>
+					</span>
+
+				</div>
+
+			</div>
+		
+
+
+			<div class="filtroDasSolicitacoes">
+				<div class="collapse" id="filtrosaccordion">
+					<div class="card card-body-filtros">
+						<form id="buscasAvancadas">
+							<div class="form-row">
+								<div class="form-group col-md-3">
+									<label for="buscaCliente">Nome do Cliente:</label> <input
+										type="text" class="form-control" id="buscaCliente"
+										th:name="buscaCliente">
+								</div>
+								<div class="form-group col-md-3">
+									<label for="buscaAssunto">Assunto:</label> <input type="text"
+										class="form-control" id="buscaAssunto" th:name="buscaAssunto">
+								</div>
+								<div class="form-group col-md-3">
+									<label for="buscaUsuario">Nome do Usuário:</label> <input
+										type="text" class="form-control" id="buscaUsuario"
+										th:name="buscaUsuario">
+								</div>
+								<div class="form-group col-md-3">
+									<label for="buscaBairro">Bairro:</label> <input type="text"
+										class="form-control" id="buscaBairro" th:name="buscaBairro">
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-md-3">
+									<label for="buscaCliente">Data Inicial:</label> <input
+										type="date" class="form-control" id="buscaData"
+										th:name="buscaData">
+								</div>
+								<div class="form-group col-md-3">
+									<label for="buscaCliente">Data Final:</label> <input
+										type="date" class="form-control" id="buscaDataFinal"
+										th:name="buscaDataFinal">
+								</div>
+
+
+								<div class="form-group col-md-6">
+								<label for="status" style="display: block">Status:</label>
+								<div class="form-check form-check-inline">
+
+									<input class="form-check-input status" type="radio"
+										th:name="status" value="aberto" id="aberto"> <label
+										for="aberto" class="form-check-label">Aberto</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										th:name="status" value="atrasado" id="atrasado"> <label
+										for="atrasado" class="form-check-label">Atrasado</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										th:name="status" value="pendente" id="pendente"> <label
+										for="pendente" class="form-check-label">Pendente</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input status" type="radio"
+										th:name="status" value="finalizado" id="finalizado"> <label
+										for="finalizado" class="form-check-label">Finalizado </label>
+								</div>
+								</div>
+							</div>
+							<div class="form-row">
+								<div class="form-group col-md-3">
+									<label for="resultado" style="display: block">Resultado:</label>
+									<div class="form-check form-check-inline">
+
+										<input class="form-check-input resultado" type="radio"
+											th:name="resultado" value="Positivo"> <label
+											class="form-check-label">Positivo</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input resultado" type="radio"
+											th:name="resultado" value="Negativo"> <label
+											class="form-check-label">Negativo</label>
+									</div>
+								</div>
+								<div class="form-group col-md-3">
+									<label for="" style="display: block">Munícipe avisado?</label>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input aviso" type="radio"
+											th:name="aviso" value="true"> <label
+											class="form-check-label">Sim</label>
+									</div>
+									<div class="form-check  form-check-inline">
+										<input class="form-check-input aviso" type="radio"
+											th:name="aviso" value="false"> <label
+											class="form-check-label">Não</label>
+									</div>
+
+								</div>
+								<div class="form-group col-md-3">
+									<label for="" style="display: block">Indicada?</label>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input indicada" type="radio"
+											th:name="indicada" value="true"> <label
+											class="form-check-label">Sim</label>
+									</div>
+									<div class="form-check  form-check-inline">
+										<input class="form-check-input indicada" type="radio"
+											th:name="indicada" value="false"> <label
+											class="form-check-label">Não</label>
+									</div>
+
+								</div>
+
+							</div>
+
+							<div class="btn-filtro-tamanho"
+								style="float: left; width: 95%; transform: translateX(-1.6%)">
+								<a class="btn btn-filtro ml-0" href="#" role="button"
+									id="limpar">Limpar Filtros</a>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<div class="container">
+
+			<div class="row">
+				<div class="col-md-12">
+
+					<table id="table-solicitacoes"
+						class="table table-sm table-striped nowrap" style="width: 100%">
+						<thead class="thead-dark">
+							<tr>
+								<th></th>
+								<th scope="col">Id</th>
+								<th scope="col">Munícipe</th>
+								<th scope="col">Bairro</th>
+								<th scope="col">Assunto</th>
+								<th scope="col">Indicada?</th>
+								<th scope="col">Status</th>
+								<th scope="col">Data</th>
+								<th scope="col">Ações</th>
+							</tr>
+						</thead>
+					</table>
+
+
+					<a class="btn btn-adicionar" href="#" role="button"
+						data-toggle="modal" data-target="#modal-solicitacao">Adicionar</a>
+					<span th:replace="solicitacao/modal :: modal-form"></span> <a
+						class="btn btn-download-relatorio" href="#" role="button"
+						id="abrirRelatorioModal" data-toggle="modal"
+						data-target="#modal-relatorio-dinamico">Gerar PDF</a> 
+						<a class="btn btn-excel-relatorio"  href="#" role="button" data-toggle="modal"
+					data-target="#modal-relatorio-excel" id="abrirRelatorioModalExcel"
+					>Gerar Excel</a> 
+						<span
+						th:replace="solicitacao/modal-solicitacaoPorMunicipe :: modal-form"></span>
+					<span th:replace="solicitacao/modal-relatorio :: modal-form"></span>
+					<span
+					th:replace="solicitacao/modal-relatorio-excel :: modal-form"></span>
+
+				</div>
+			</div>
+		</div>
+		
+		
+
+	</section>
+	<script th:src="@{/js/solicitacao.js(v=${version})}" th:fragment="js"></script>
+	<script th:inline="javascript" th:fragment="inlinescript">
+		var solicitacao = [[${solicitacao.id}]];	
+		var sucessoModal = [[${sucessoModal}]];
+		var fonesCadastrados = [[${fonesCadastrados}]];
+		var statusUrl = [[${statusUrl}]];
+		var solucoes = [[${solucoes}]];
+		var autoridade = [[${autoridade}]];
+
+		$(document).ready(function() {
+			
+			
+			
+			var i = 1;	
+			if(fonesCadastrados != null){
+			
+				fonesCadastrados.telefones.length != 0 ? i = fonesCadastrados.telefones.length : i = 1;
+				var index = i
+			}
+			
+			
+			$('#adiciona-tel').on('click', function(){		
+				$(
+						'<div class="form-row new-line">'+
+							'<div class="form-group col-md-6">'+
+								'<label for="telefone">Telefone</label> <input type="text"'+
+									 'class="form-control telefone order" id="telefone" name="telefones[' + i + '].numero"/>'+
+							'</div>'+
+						'<div class="form-group col-md-4">'+
+							'<label for="marcador">Marcador</label> <select id="marcador" class="form-control order-marcador" name="telefones[' + i + '].marcador">'+
+								'<option value="">Selecione</option>'+
+								'<option>Celular</option>'+
+								'<option>Whatsapp</option>'+
+								'<option>Comercial</option>'+
+								'<option>Residencial</option>'+
+							'</select>'+
+							'<input type="hidden" class = "order-id" name="telefones[' + i + '].id"/>'+
+						'</div>'+
+						'<a class="btn btn-danger mb-2 remove-tel" id="remove-tel-line" href="#" role="button"><i class="fas fa-trash"  style="color:white"></i></a>'+
+					'</div>'
+					
+					
+				).appendTo($("#mostra-tel")).hide().slideDown("normal");
+				
+				$(".telefone").inputmask({
+        			mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+        			keepStatic: true
+     			 });
+				 i++;
+				 $(".remove-tel").on('click', function(e){					
+						e.preventDefault();
+						var teste = 0;
+						$(this).closest('.new-line, .old-line').remove();
+// 						$(this).closest('.new-line').slideUp("normal",function(){
+// 							$(this).remove();		
+							
+// 						})
+						
+						
+						$('.order').each(function(index){						
+							teste = index + 1
+							if(fonesCadastrados != null){
+								$(this).attr('name','telefones[' + (index) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index) + '].marcador');
+							}else{
+								$(this).attr('name','telefones[' + (index + 1) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index + 1) + '].marcador');
+								$('.order-id').attr('name','telefones[' + (index + 1) + '].id');
+							}
+							
+						})
+						if(fonesCadastrados != null){
+						i=teste
+					}else{
+							i = teste+1
+						}
+						
+						return false;
+					})
+				
+			});
+			 $(".remove-tel-antigo").on('click', function(e){					
+					e.preventDefault();
+					var row = $(this).closest('.new-line, .old-line');
+					var contador = 0;
+// 					$.each($('.new-line, .old-line'), function(k,v){
+// 						contador += 1;
+// 					})	
+// 					if(contador > 1){
+						var id = $(this).next().val();
+						deletarViaNome(id, row);
+						var teste = 0;
+						
+						$('.order').each(function(index){						
+							teste = index + 1
+							if(fonesCadastrados != null){
+								$(this).attr('name','telefones[' + (index) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index) + '].marcador');
+							}else{
+								$(this).attr('name','telefones[' + (index + 1) + '].numero');
+								$('.order-marcador').attr('name','telefones[' + (index + 1) + '].marcador');
+							}
+							
+						})
+						if(fonesCadastrados != null){
+							i=teste
+						}else{
+							i = teste+1
+						}
+// 					}else{
+// 						$('.erro-tel').show().text("Ao menos um telefone é obrigatório")
+// 					}
+					
+					
+					
+					return false;
+				})
+			
+	$(".telefone").inputmask({
+        mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+        keepStatic: true
+      });
+			
+			if (sucessoModal != null) {
+				$("#modal-solicitacaoPorMunicipe").modal('show');
+				$("#modal-solicitacaoPorMunicipe #modal-titulo").text("Nova solicitação");
+ 				
+			}
+			if($("#erro_municipe").html() != ""){
+				$("#modal-solicitacao").modal('show');
+				 $('.visualizacao').hide();
+				 $('.salvar-municipe').show();
+				 if($("#bairro-cliente").val() == ""){
+					$("#bairro-cliente").addClass('is-invalid');
+				 }
+				 $("#erro_municipe, .invalid-feedback span").css("color", "red");
+				 
+			}
+
+			if($("#msg-erro-solicitacao-com-municipe").html() != ""){
+				$("#modal-solicitacaoPorMunicipe").modal('show');
+				 if($("#bairro-solicitacao-por-municipe").val() == ""){
+						$("#bairro-solicitacao-por-municipe").addClass('is-invalid');
+					}
+					if($("#assunto-solicitacao-por-municipe").val() == ""){
+						$("#assunto-solicitacao-por-municipe").addClass('is-invalid');
+					}
+				 $("#msg-erro-solicitacao-com-municipe, .invalid-feedback span").css("color", "red");
+				 
+			}
+			$("#modal-solicitacaoPorMunicipe").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+			})
+			
+			$("#salvar-solicitacao").on('click', function(){
+	    		  $('.visualizacao').slideToggle();
+	    		  $('.salvar-solicitacao').slideToggle();
+	    	})
+	    	$("#salvar-municipe").on('click', function(){
+	    		  $('.visualizacao').slideToggle();
+	    		  $('.salvar-municipe').slideToggle();
+	    	})
+	    	$("#cancelar-modal-solicitacao").on('click', function(){
+	    		 $('.salvar-solicitacao').slideToggle();
+	    		 $('.visualizacao').slideToggle();
+	    	})
+	    	$("#cancelar-modal").on('click', function(){
+	    		 $('.salvar-municipe').slideToggle();
+	    		 $('.visualizacao').slideToggle();
+	    	})
+	    	$("#fechar-modal").on('click', function(){
+	    		  $('#modal-solicitacao').modal('hide');
+	    	})
+			
+			
+			if(solicitacao != null){
+				$("#modal-solicitacao").modal('show');
+				 $('.visualizacao').hide();
+				 $('.salvar-municipe').hide();
+				 $('.salvar-solicitacao').show();
+				$(".modal-title").text("Editar Solicitacao");
+			}
+			if(solicitacao == null){
+				$(".modal-title").text("Nova Solicitacao");
+			}
+			if ($("#msg-erro").html() != "") {
+				$("#modal-solicitacao").modal('show');
+				 $('.visualizacao').hide();
+				 $('.salvar-solicitacao').show();
+				 
+				if($("#cliente").val() == ""){
+					$("#cliente").addClass('is-invalid');
+				}
+				if($("#bairro-solicitacao").val() == ""){
+					$("#bairro-solicitacao").addClass('is-invalid');
+				}
+				if($("#assunto-solicitacao").val() == ""){
+					$("#assunto-solicitacao").addClass('is-invalid');
+				}
+				$("#msg-erro, .invalid-feedback span").css("color", "red");
+			}
+			
+
+			$("#modal-solicitacao").on("hidden.bs.modal", function() {
+				$(".is-invalid").removeClass("is-invalid").removeAttr('style');
+				 $('.visualizacao').show();
+				 $('.salvar-municipe').hide();
+				 $('.salvar-solicitacao').hide();
+				$("#msg-erro").hide();
+				$("#erro_municipe").hide();
+				$("#modal-solicitacao").modal('hide');
+				
+			});
+			
+			$(".btn-cadastrar-usuario").on("click", function(){
+				$(".form-control").val("");
+				$(".modal-title").text("Nova Solicitacao");
+			});
+			$('#confirm-modal').on('show.bs.modal', function(){
+				$(".modal-title").text("Excluir Solicitacao");
+// 				$('#subtitulo').text('Todos pa que este cliente é dono serão deletados!');
+			});
+// 			document.getElementById('data').max = new Date(new Date().getTime()
+// 					- new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+		});
+		function deletarViaNome(id, row){
+			$.ajax({
+				method : "GET",
+				url : "/clientes/excluir/telefone/" + id + "/cliente/" + cliente,	
+				beforeSend : function(){
+					$(row).last().slideUp("normal", function(){
+						 $(this).remove();					
+					})
+					
+				},
+				success : function() {
+					setTimeout(function(){
+				      location.reload();
+				    }, 300) 
+				// alert(fonesCadastrados.telefones.length)
+				}
+			})
+		}
+	</script>
+</body>
+</html>

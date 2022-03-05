@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+	<!-- Modal -->
+	<div th:fragment="modal-form" class="modal fade"
+		id="modal-editar" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg"
+			role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-titulo">Editar Solicitação</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					
+					<span th:text="${erro_solicitacao}" id="msg-erro-solicitacao"></span>
+					<form 
+						th:action="@{/solicitacoes/salvar/codigo/{id} (id=${solicitacao.id})}"
+						method="POST" enctype="multipart/form-data"
+						th:object="${solicitacao}">
+						<div class="form-row">
+							<div class="form-group col-md-6">
+									<label for="cliente">Cliente</label> <input type="text"
+										class="form-control descricao-cliente" id="cliente"
+										placeholder="Nome do cliente..."
+										th:classappend="${#fields.hasErrors('cliente.nome')} ? 'is-invalid'"
+										th:field="*{cliente.nome}" />
+									<div class="invalid-feedback">
+										Selecione o cliente
+									</div>
+								</div>
+							<div class="form-group col-md-6">
+									<label for="assunto">Bairro</label> <input type="text"
+										placeholder="Belas Artes..." class="form-control descricao-bairro"
+										th:field="*{bairro.descricao}" id="bairro-solicitacao-por-municipe"
+										th:classappend="${#fields.hasErrors('bairro.descricao')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										Selecione o bairro
+									</div>
+							</div>
+							</div>
+							<div class = "form-row">
+							<div class="form-group col-md-12">
+									<label for="assunto">Assunto</label> <input type="text"
+										placeholder="Assunto da solicitação" class="form-control descricao-assunto"
+										th:field="*{assunto.descricao}" id="assunto-solicitacao-por-municipe"
+										th:classappend="${#fields.hasErrors('assunto.descricao')} ? 'is-invalid'" />
+									<div class="invalid-feedback">
+										Selecione o assunto
+									</div>
+								</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-12">
+								<label for="descricao">Anotações</label>
+								<textarea class="form-control" id="descricao" rows="6"
+									autofocus="autofocus" th:field="*{descricao}"
+									th:classappend="${#fields.hasErrors('descricao')} ? 'is-invalid'"></textarea>
+								<div class="invalid-feedback">
+									<span th:errors="*{descricao}"></span>
+								</div>
+							</div>
+						</div>
+						<input type="hidden" id="id_solicitacao" class="form-control" th:field="*{id}" />
+					
+						<button type="button" class="btn btn-perigo"
+							data-dismiss="modal" id="cancelar-modal">Cancelar</button>
+						<button type="submit" class="btn btn-sim btn-validacao">Salvar</button>
+
+					</form>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</body>
+</html>
